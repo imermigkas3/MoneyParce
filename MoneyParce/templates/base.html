@@ -25,9 +25,6 @@
         <div class="navbar-nav ms-auto navbar-ml">
           <a class="nav-link" href="{% url 'home.about' %}">About</a>
 
-          {% comment %} Temporarily hardcoded link if 'movies.index' view doesn't exist yet {% endcomment %}
-          <a class="nav-link" href="#">Movies</a>
-
           <div class="vr bg-white mx-2 d-none d-lg-block"></div>
 
           {% if user.is_authenticated %}

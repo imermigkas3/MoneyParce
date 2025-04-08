@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate
 from .forms import CustomUserCreationForm, CustomErrorList
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+from django.contrib.auth.models import User
+
 @login_required
 def logout(request):
     auth_logout(request)
@@ -40,3 +43,20 @@ def signup(request):
         else:
             template_data['form'] = form
             return render(request, 'accounts/signup.html', {'template_data': template_data})
+
+
+def settings(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        # If the profile does not exist, create one
+        user_profile = UserProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        new_income = request.POST.get('income')
+        user_profile.income = new_income
+        user_profile.save()
+
+    return render(request, 'accounts/settings.html', {'current_income': user_profile.income})

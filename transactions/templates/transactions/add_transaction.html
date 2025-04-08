@@ -1,9 +1,14 @@
-<h1>Add a New Transaction</h1>
+{% extends 'base.html' %}
+{% block content %}
 
-<form method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Add</button>
+<div class="container mt-4">
+  <h2>Add Transaction</h2>
+
+<form method="POST" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Add</button>
+    <a href="{% url 'transaction_list' %}" class="btn btn-secondary ms-2">Cancel</a>
 </form>
-
-<a href="{% url 'transaction_list' %}">Back to transactions</a>
+</div>
+{% endblock %}

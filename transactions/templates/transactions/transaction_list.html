@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Your Transactions</h2>
+
+  <a href="{% url 'add_transaction' %}" class="btn btn-success mb-3">+ Add New Transaction</a>
+
+  {% if transactions %}
+    <ul class="list-group">
+      {% for transaction in transactions %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ transaction.date }}</strong> – {{ transaction.description }} – ${{ transaction.amount }} 
+            <span class="badge rounded-pill
+                {% if transaction.category == 'FOOD' %}bg-success
+                {% elif transaction.category == 'RENT' %}bg-dark
+                {% elif transaction.category == 'UTIL' %}bg-primary
+                {% elif transaction.category == 'TRAN' %}bg-info
+                {% elif transaction.category == 'ENTR' %}bg-warning
+                {% elif transaction.category == 'HEAL' %}bg-danger
+                {% else %}bg-secondary
+                {% endif %}">{{ transaction.get_category_display }}
+            </span>
+          </div>
+          <div>
+            <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-sm btn-outline-warning me-2">Edit</a>
+            <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No transactions yet. Time to add one!</p>
+  {% endif %}
+</div>
+
+{% endblock %}

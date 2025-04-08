@@ -19,8 +19,13 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    #include function includes URLs form other URL configuration files (namely the home app here)
+    #The empty string, '', represents the base URL to include the URLs from the home.urls file.
+
     path('', include('home.urls')),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include("django.contrib.auth.urls")),
     path('transactions/', include('transactions.urls')),
+    path('budgets/', include('budgets.urls')),
 ]

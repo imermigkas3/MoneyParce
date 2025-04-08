@@ -1,9 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>About page</title>
-</head>
-<body>
-  <h1>Welcome to the About Page</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-6 mx-auto mb-3">
+        <h2>About</h2>
+        <hr />
+        <p>
+            As college students, we know budgeting can be difficult. We have limited income and are short on time due to homework, studying, and extracurriculars.
+            We simply do not have the time to budget, but it is extremely important to do so during these fiscally trying times.
+        </p>
+        <p>
+          Our Solution: Money Parce - A Web Application which allows users to organize their finance and budget for future in a simple and clear way.
+        </p>
+          <div>
+              <h3>What utilities does Money Parce provide?</h3>
+              <ul>
+                  <li>
+                      Allows users to input their income by simply linking their bank so they don't have to waste their time
+                  </li>
+                  <li>
+                      If they'd like, users can also input their spending manually
+                  </li>
+                  <li>
+                      Categorizes their spending and sets budgets for them
+                  </li>
+                  <li>
+                      Provides personalized written tips and visual reports to show the user how they can improve their money management
+                      in an easily digestible manner
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <div class="col-md-6 mx-auto mb-3 text-center">
+        <img src="{% static 'img/about.png'%}"
+             class="max-width-100"
+             alt="about" height="700" style="border-radius: 100px;"/>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+
+
+
+
+
+{#<div>As college students, we know budgeting can be difficult. We have limited income and are short on time due to homework, studying, and extracurriculars. </div>#}
+{#        <div> We simply do not have the time to budget, but it is extremely important to stay afloat financially during these fiscally trying times paying all this tuition. </div>#}
+{#        <div>Our Solution: Money Parce - A Web Application which allows users to organize their finance and budget for future in a simple and clear way.</div>#}

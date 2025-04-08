@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <div>
+        <p>Your current income is: ${{ current_income }}</p>
+    </div>
+    <div>
+        To change your income, input a new value in the box below.
+    </div>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="income">New Income:</label>
+            <input type="number" name="income" id="income" value="{{ current_income }}" required>
+            <button>Save Income</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

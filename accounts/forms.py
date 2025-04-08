@@ -2,6 +2,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
+from .models import Income
+from django import forms
+
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -43,3 +46,7 @@ class CustomPasswordResetForm(PasswordResetForm):
         if not User.objects.filter(email=email).exists():
             raise ValidationError("There is no user account that exists with this email address. Please provide a valid email address that is registered with MoneyParce or go back to login and create a new account.")
         return email
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = ['amount']

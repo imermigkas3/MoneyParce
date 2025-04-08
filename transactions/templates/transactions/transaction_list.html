@@ -1,0 +1,11 @@
+<h1>Your Transactions</h1>
+
+<a href="{% url 'add_transaction' %}">Add New Transaction</a>
+
+<ul>
+  {% for transaction in transactions %}
+    <li>{{ transaction.date }} - {{ transaction.description }} - ${{ transaction.amount }} ({{ transaction.category }})</li>
+  {% empty %}
+    <li>No transactions yet.</li>
+  {% endfor %}
+</ul>

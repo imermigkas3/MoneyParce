@@ -1,6 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
+from .models import Income
+from django import forms
 
 class CustomErrorList(ErrorList):
     def __str__(self):
@@ -16,3 +18,8 @@ class CustomUserCreationForm(UserCreationForm):
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = None
             self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = ['amount']

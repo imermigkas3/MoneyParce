@@ -46,6 +46,7 @@ class CustomPasswordResetForm(PasswordResetForm):
         if not User.objects.filter(email=email).exists():
             raise ValidationError("There is no user account that exists with this email address. Please provide a valid email address that is registered with MoneyParce or go back to login and create a new account.")
         return email
+
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income

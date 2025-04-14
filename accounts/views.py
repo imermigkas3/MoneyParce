@@ -4,6 +4,9 @@ from .forms import CustomUserCreationForm, CustomErrorList
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from django.contrib.auth.models import User
+from .models import Income
+from .forms import IncomeForm
+from django.shortcuts import get_object_or_404
 
 @login_required
 def logout(request):
@@ -48,15 +51,19 @@ def signup(request):
 def settings(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    try:
-        user_profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        # If the profile does not exist, create one
-        user_profile = UserProfile.objects.create(user=request.user)
+
+    income, created = Income.objects.get_or_create(
+        user=request.user,
+        defaults={'amount': 0}  # Provide default amount when creating new record
+    )
 
     if request.method == 'POST':
-        new_income = request.POST.get('income')
-        user_profile.income = new_income
-        user_profile.save()
+        form = IncomeForm(request.POST, instance=income)
+        if form.is_valid():
+            form.save()
+        else:
+            form = IncomeForm(instance=income)
+    else:
+        form = IncomeForm(instance=income)
 
-    return render(request, 'accounts/settings.html', {'current_income': user_profile.income})
+    return render(request, 'accounts/settings.html', {'form': form, 'current_income': income.amount})

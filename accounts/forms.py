@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
 from .models import Income
-from django import forms
 
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth import get_user_model

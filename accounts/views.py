@@ -2,11 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from .forms import CustomUserCreationForm, CustomErrorList
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile
-from django.contrib.auth.models import User
 from .models import Income
 from .forms import IncomeForm
-from django.shortcuts import get_object_or_404
 
 @login_required
 def logout(request):

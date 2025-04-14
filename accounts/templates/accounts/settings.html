@@ -10,9 +10,7 @@
     <div>
         <form method="POST">
             {% csrf_token %}
-            <label for="income">New Income:</label>
-            <input type="number" name="income" id="income" value="{{ current_income }}" required>
-            <button>Save Income</button>
+            {{ form.as_p }}
         </form>
     </div>
 </div>

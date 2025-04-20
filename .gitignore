@@ -21,3 +21,6 @@ env/
 # System files
 .DS_Store
 Thumbs.db
+
+# API keys
+config.py

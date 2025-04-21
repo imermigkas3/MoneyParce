@@ -3,13 +3,25 @@
     <div class="container">
         <div class="row">
                 <div class="col-md-6 mx-auto">
-                    <div class="card border border-black">
+                    <div class="card border border-black" style="height: 540px;">
                         <div class="card-header">
                             AI Agent
                         </div>
-                        <p>
-                            This is the AI agent chat box.
-                        </p>
+                        <div class="card-body overflow-auto">
+                            {% for message in message_list %}
+                                <div class="mb-4 rounded-2" style="background-color: lightgray;">
+                                    <div class="p-2">
+                                        {{ message }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer">
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ form }}
+                            </form>
+                        </div>
                     </div>
                 </div>
         </div>

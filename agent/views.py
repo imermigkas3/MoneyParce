@@ -6,6 +6,7 @@ from config import API_KEY
 # Create your views here.
 client = genai.Client(api_key=API_KEY)
 gem_chat = client.chats.create(model="gemini-2.0-flash")
+gem_chat.send_message("You are a financial advisor") # EDIT THIS PROMPT
 def chat(request):
 
     if request.method == 'POST':
@@ -17,6 +18,7 @@ def chat(request):
             request.session.modified = True
     else: # first time we visit the chat page
         request.session['message_list'] = []
+        gem_chat.send_message("") # EDIT THIS PROMPT
     form = ChatForm()
 
     return render(request, 'agent/chat.html', {'form': form,

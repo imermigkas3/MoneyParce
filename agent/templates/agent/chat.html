@@ -9,14 +9,16 @@
                                 AI Agent
                             </div>
                         </div>
-                        <div class="card-body overflow-auto">
-                            {% for message in message_list %}
-                                <div class="mb-4 rounded-2" style="background-color: lightgray;">
-                                    <div class="p-2">
-                                        {{ message }}
+                        <div class="card-body overflow-auto" style="display: flex; flex-direction: column-reverse;">
+                            <div>
+                                {% for message in message_list %}
+                                    <div class="mb-4 rounded-2" style="background-color: lightgray;">
+                                        <div class="p-2">
+                                            {{ message }}
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                         <div class="card-footer">
                             <form method="POST">

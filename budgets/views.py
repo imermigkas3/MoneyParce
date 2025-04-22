@@ -1,7 +1,7 @@
 from decimal import InvalidOperation, Decimal
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Budget
 
 # Create your views here.
@@ -23,6 +23,7 @@ def create_budget(request):
         b.title = request.POST.get("title","").strip()
         b.description = request.POST.get("description","").strip()
         b.category = request.POST.get("category","").strip()
+        b.duration = request.POST.get("duration","").strip()
 
         amt = request.POST.get("amount","0").strip()
 
@@ -38,5 +39,32 @@ def create_budget(request):
     return render(request,
                   "budgets/create.html")
 
+@login_required
+def edit_budget(request, id):
+    budget = get_object_or_404(Budget, id=id, user=request.user)
+    if request.method == "POST" and request.POST['title'] != "":
+        budget.title = request.POST.get("title","").strip()
+        budget.description = request.POST.get("description","").strip()
+        budget.category = request.POST.get("category","").strip()
+
+        amt = request.POST.get("amount","0").strip()
+        try:
+            budget.amount = Decimal(amt)
+        except (InvalidOperation, ValueError):
+            # no change
+            budget.amount = budget.amount
+
+        budget.save()
+
+        return redirect("Budgets.index")
+
+    # on GET, just show the form with the existing values
+    return render(request, "budgets/edit.html", {"budget": budget})
+
+@login_required
+def delete_budget(request, id):
+    budget = get_object_or_404(Budget, id=id, user=request.user)
+    budget.delete()
+    return redirect("Budgets.index")
 
 

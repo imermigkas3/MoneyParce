@@ -26,6 +26,9 @@ class Budget(models.Model):
     category = models.CharField(max_length=50,
                                 blank=True,
                                 help_text="e.g. 'Groceries', 'Rent', 'Entertainment'")
+    duration = models.CharField(max_length=50,
+                                blank=True,
+                                help_text="weekly, monthly, annually")
     date_created = models.DateTimeField(auto_now_add=True)
 
 

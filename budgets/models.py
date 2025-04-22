@@ -24,7 +24,7 @@ class Budget(models.Model):
                                    blank=True)
     amount = models.DecimalField(max_digits=10,
                                  decimal_places=2,
-                                 default=0.01, validators=[MinValueValidator(Decimal('0.00'))],
+                                 default=0.00, validators=[MinValueValidator(Decimal('0.00'))],
                                  help_text="Amount in your currency (e.g. 1234.56)")
     category = models.CharField(max_length=50,
                                 blank=True,

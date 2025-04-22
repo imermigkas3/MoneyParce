@@ -1,12 +1,10 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-    <div>
-        <h2>Budgets</h2>
-        {% for budget in template_data.budgets %}
-            <div>
-            {{ budget.name }}
-            {{ budget.cost }}
-            </div>
+    {% if user.is_authenticated %}
+        <h2>Your budgets:</h2>
+        {% for budget in template_data.Budgets %}
+            {{ budget.title }} - {{ budget.amount }} <br>
         {% endfor %}
-    </div>
-{% endblock content %}
+        <a href="{% url 'Budgets.create_budget' %}" class="btn btn-primary">Create Budget</a>
+    {% endif %}
+{% endblock %}

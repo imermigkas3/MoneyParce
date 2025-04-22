@@ -17,10 +17,30 @@ def add_transaction(request):
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
 
+CATEGORY_CHOICES = [
+    ('FOOD', 'Food'),
+    ('RENT', 'Rent'),
+    ('UTIL', 'Utilities'),
+    ('TRAN', 'Transport'),
+    ('ENTR', 'Entertainment'),
+    ('HEAL', 'Healthcare'),
+    ('MISC', 'Miscellaneous'),
+]
+
 @login_required
 def transaction_list(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'transactions/transaction_list.html', {'transactions': transactions})
+    selected_categories = request.GET.getlist('category')
+    if selected_categories:
+        transactions = Transaction.objects.filter(category__in=selected_categories)
+    else:
+        transactions = Transaction.objects.all()
+
+    context = {
+        'transactions': transactions,
+        'category_choices': CATEGORY_CHOICES,
+        'selected_categories': selected_categories
+    }
+    return render(request, 'transactions/transaction_list.html', context)
 
 @login_required
 def edit_transaction(request, pk):

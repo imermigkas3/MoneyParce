@@ -17,15 +17,6 @@ def add_transaction(request):
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
 
-CATEGORY_CHOICES = [
-    ('FOOD', 'Food'),
-    ('RENT', 'Rent'),
-    ('UTIL', 'Utilities'),
-    ('TRAN', 'Transport'),
-    ('ENTR', 'Entertainment'),
-    ('HEAL', 'Healthcare'),
-    ('MISC', 'Miscellaneous'),
-]
 
 @login_required
 def transaction_list(request):
@@ -37,7 +28,15 @@ def transaction_list(request):
 
     context = {
         'transactions': transactions,
-        'category_choices': CATEGORY_CHOICES,
+        'category_choices': [
+            ('FOOD', 'Food'),
+            ('RENT', 'Rent'),
+            ('UTIL', 'Utilities'),
+            ('TRAN', 'Transport'),
+            ('ENTR', 'Entertainment'),
+            ('HEAL', 'Healthcare'),
+            ('MISC', 'Miscellaneous'),
+        ],
         'selected_categories': selected_categories
     }
     return render(request, 'transactions/transaction_list.html', context)

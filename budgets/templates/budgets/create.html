@@ -2,6 +2,9 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
+        {% if form_error %}
+                <div class="alert alert-danger">{{ form_error }}</div>  {# ← added error alert #}
+        {% endif %}
         <!--Every time we submit this form it will send a post
         request to the url associated with this name (remember a name is a way to
          refer to a url in htis case it refers to 'budget/create/'-->
@@ -18,7 +21,7 @@
                            placeholder="description">
 
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="number" name="amount" step="0.01" class="form-control"
+                    <input type="number" name="amount" min="0.01" step="0.01" class="form-control"
                         inputmode="decimal"  pattern="^\d+(\.\d{1,2})?$" placeholder="e.g. 12.34" id="amount">
                     <label for="id_category" class="form-label">Category</label>
                     <select name="category" id="id_category" class="form-select" required>

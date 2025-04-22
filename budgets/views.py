@@ -1,6 +1,7 @@
 from decimal import InvalidOperation, Decimal
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Budget
 
@@ -17,6 +18,7 @@ def index(request):
 
 @login_required
 def create_budget(request):
+    form_error = None
     if request.method == "POST" and request.POST['title'] != "":
         b = Budget()
         b.user = request.user
@@ -31,17 +33,31 @@ def create_budget(request):
             b.amount = Decimal(amt)
         except (InvalidOperation, ValueError):
             b.amount = Decimal("0")
-        b.save()
 
-        return redirect("/budgets/")
+        exists = Budget.objects.filter(
+            user=request.user,
+            title=b.title,
+            description=b.description,
+            category=b.category,
+            duration=b.duration,
+            amount=b.amount
+        ).exists()
+
+        if exists:
+            form_error = "You already have a budget with exactly those details."
+        else:
+            b.save()
+            return redirect("Budgets.index")
 
     # if GET or missing title, just show the form again
     return render(request,
-                  "budgets/create.html")
+                  "budgets/create.html", {"form_error": form_error,
+                                                                "initial": request.POST})
 
 @login_required
 def edit_budget(request, id):
     budget = get_object_or_404(Budget, id=id, user=request.user)
+    form_error = None
     if request.method == "POST" and request.POST['title'] != "":
         budget.title = request.POST.get("title","").strip()
         budget.description = request.POST.get("description","").strip()
@@ -50,16 +66,18 @@ def edit_budget(request, id):
         amt = request.POST.get("amount","0").strip()
         try:
             budget.amount = Decimal(amt)
+            budget.full_clean()  # ← runs MinValueValidator
+            budget.save()
+            return redirect("Budgets.index")
         except (InvalidOperation, ValueError):
-            # no change
-            budget.amount = budget.amount
+            form_error = "Please enter a valid number."
+        except ValidationError as e:
+            form_error = e.message_dict.get('amount', ["Invalid amount"])[0]
 
-        budget.save()
-
-        return redirect("Budgets.index")
 
     # on GET, just show the form with the existing values
-    return render(request, "budgets/edit.html", {"budget": budget})
+    return render(request, "budgets/edit.html", {"budget": budget,
+                                                                    'form_error' :form_error})
 
 @login_required
 def delete_budget(request, id):

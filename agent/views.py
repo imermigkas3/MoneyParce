@@ -2,17 +2,17 @@ from django.shortcuts import render
 from .forms import ChatForm
 from google import genai
 from config import API_KEY
-from accounts.models import Income
-from transactions.models import Transaction
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from accounts.models import Income
+from transactions.models import Transaction
+from budgets.models import Budget
 
 # Create your views here.
 client = genai.Client(api_key=API_KEY)
 gem_chat = client.chats.create(model="gemini-2.0-flash")
 def chat(request):
-    if 'message_list' not in request.session:
-        request.session['message_list'] = []
+    request.session['message_list'] = []
 
     form = ChatForm()
     return render(request, 'agent/chat.html', {
@@ -26,11 +26,12 @@ def send_message(request):
         if not request.session['message_list']: # no messages have been sent yet
             income = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
             transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-
+            budgets = Budget.objects.filter(user=request.user)
             initial_prompt = f"""
             You are a financial advisor designed to serve the MoneyParce app. You are to help users of the MoneyParce app
             reach their financial goals. You are currently in a chat with a user who is looking to you for financial advice.
-            This user's income is { income }. The user's transactions are { transactions }.
+            This user's income is { income }. The user's transactions are { transactions }. The user's budgets are 
+            { budgets }.
     
             If a user asks about something that is outside of the scope of this app (not related to finances or financial
             advice or spending habits/lifestyle), then kindly inform them that you are here solely to help them figure out

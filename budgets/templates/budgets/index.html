@@ -2,6 +2,12 @@
 {% block content %}
     {% if user.is_authenticated %}
     <h2 class="mb-4">Your Budgets</h2>
+        {% if budget_warning %}
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+            <strong>Warning:</strong> {{ budget_warning }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
 
     <ul class="list-group mb-4">
       {% for budget in template_data.Budgets %}
@@ -10,7 +16,7 @@
             <div>
               <h5 class="mb-1">{{ budget.title }}</h5>
               <small class="text-muted">
-                {{ budget.category|default:"Uncategorized" }} &bull;
+                {{ budget.get_category_display|default:"Uncategorized" }} &bull;
                 {{ budget.date_created|date:"M d, Y" }}
               </small>
             </div>

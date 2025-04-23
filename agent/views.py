@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from .forms import ChatForm
-from google import genai
-from config import API_KEY
 from accounts.models import Income
 from transactions.models import Transaction
+from google import genai
+from config import API_KEY
 
-# Create your views here.
 client = genai.Client(api_key=API_KEY)
 gem_chat = client.chats.create(model="gemini-2.0-flash")
+
+
 def chat(request):
     user = request.user
     income = Income.objects.get_or_create(user=user, defaults={'amount': 0})

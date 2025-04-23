@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Financial Report</h2>
+
+    <!-- Time Range Filter -->
+    <form id="timeFilterForm" class="mb-4 text-center">
+        <label for="timeRange" class="form-label fw-bold">Select Time Range:</label>
+        <select id="timeRange" class="form-select w-auto d-inline-block ms-2">
+            <option value="all" selected>All Time</option>
+            <option value="3months">Last 3 Months</option>
+        </select>
+    </form>
+
+    <!-- Insight Summary -->
+    <div id="insightSummary" class="alert alert-info text-center d-none">
+        You spent <strong id="totalSpent">$X</strong> in the selected period.
+        Your top expense was <strong id="topCategory">Category</strong>.
+        <span id="basicTip">Try limiting spending in this category to save!</span>
+    </div>
+
+    <div class="row">
+        <!-- Pie Chart Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-center fw-bold">
+                    Spending by Category
+                </div>
+                <div class="card-body text-center">
+                    <canvas id="pieChart" width="350" height="350"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Chart Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-center fw-bold">
+                    Monthly Spending Trends
+                </div>
+                <div class="card-body text-center">
+                    <canvas id="lineChart" width="350" height="350"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let pieChartInstance;
+let lineChartInstance;
+
+function loadReportData(timeRange = "all") {
+    fetch("{% url 'user-report-data' %}?range=" + timeRange + "&t=" + new Date().getTime())
+    .then(response => response.json())
+    .then(data => {
+        if (pieChartInstance) pieChartInstance.destroy();
+        if (lineChartInstance) lineChartInstance.destroy();
+
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        pieChartInstance = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: data.category_data.map(c => c.category),
+                datasets: [{
+                    data: data.category_data.map(c => c.total),
+                    backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f'],
+                }]
+            },
+            options: {
+                animation: {
+                    duration: 1200,
+                    easing: 'easeInOutCubic'
+                }
+            }
+        });
+
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        lineChartInstance = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(data.monthly_data),
+                datasets: [{
+                    label: 'Monthly Spending',
+                    data: Object.values(data.monthly_data),
+                    fill: false,
+                    borderColor: '#4e79a7',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                animation: {
+                    duration: 1200,
+                    easing: 'easeInOutCubic'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        let totalSpent = 0;
+        let topCategory = '';
+        let maxSpent = 0;
+
+        data.category_data.forEach(entry => {
+            totalSpent += entry.total;
+            if (entry.total > maxSpent) {
+                maxSpent = entry.total;
+                topCategory = entry.category;
+            }
+        });
+
+        document.getElementById('totalSpent').textContent = `$${totalSpent.toFixed(2)}`;
+        document.getElementById('topCategory').textContent = topCategory;
+        document.getElementById('basicTip').textContent =
+            `Try limiting your ${topCategory.toLowerCase()} spending to save more in this period.`;
+
+        document.getElementById('insightSummary').classList.remove('d-none');
+    });
+}
+
+loadReportData("all");
+
+document.getElementById("timeRange").addEventListener("change", function () {
+    loadReportData(this.value);
+});
+</script>
+{% endblock %}

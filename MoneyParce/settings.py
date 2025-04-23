@@ -126,9 +126,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFILES_DIRS = [
-    BASE_DIR / 'MoneyParce/static/',
-]
+STATICFILES_DIRS = [BASE_DIR / 'MoneyParce/static/',]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

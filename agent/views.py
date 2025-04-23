@@ -12,7 +12,8 @@ from budgets.models import Budget
 client = genai.Client(api_key=API_KEY)
 gem_chat = client.chats.create(model="gemini-2.0-flash")
 def chat(request):
-    request.session['message_list'] = []
+    if 'message_list' not in request.session:
+        request.session['message_list'] = []
 
     form = ChatForm()
     return render(request, 'agent/chat.html', {

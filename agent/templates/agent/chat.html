@@ -14,9 +14,11 @@
                                 {% for message in message_list %}
                                     <div class="mb-4 rounded-2 border border-gray"
                                          style="background-color: lightgray;">
-                                        <div class="p-2">
-                                            {{ message }}
-                                        </div>
+                                        {% if forloop.counter0|divisibleby:2 %}
+                                            <div class="p-2"><b>You: </b> {{ message }}</div>
+                                        {% else %}
+                                            <div class="p-2"><b>Agent: </b>{{ message }}</div>
+                                        {% endif %}
                                     </div>
                                 {% endfor %}
                             </div>
@@ -49,7 +51,7 @@
             chatBox.insertAdjacentHTML('beforeend', `
                 <div class="mb-4 rounded-2 border border-gray" style="background-color: lightgray;">
                     <div class="p-2">
-                        ${userMessage}
+                        <b>You: </b>${userMessage}
                     </div>
                 </div>
             `);
@@ -67,7 +69,7 @@
             chatBox.insertAdjacentHTML('beforeend', `
                 <div class="mb-4 rounded-2 border border-gray" style="background-color: lightgray;">
                     <div class="p-2">
-                        ${data.response}
+                        <b>Agent: </b>${data.response}
                     </div>
                 </div>
             `);

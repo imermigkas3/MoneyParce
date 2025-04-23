@@ -45,7 +45,7 @@ def signup(request):
             return render(request, 'accounts/signup.html', {'template_data': template_data})
 
 
-def settings(request):
+def profile(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
@@ -63,4 +63,4 @@ def settings(request):
     else:
         form = IncomeForm(instance=income)
 
-    return render(request, 'accounts/settings.html', {'form': form, 'current_income': income.amount})
+    return render(request, 'accounts/profile.html', {'form': form, 'current_income': income.amount})

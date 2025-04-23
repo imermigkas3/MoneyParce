@@ -8,6 +8,16 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Budget(models.Model):
+    CATEGORY_CHOICES = [
+        ('FOOD', 'Food'),
+        ('RENT', 'Rent'),
+        ('UTIL', 'Utilities'),
+        ('TRAN', 'Transportation'),
+        ('ENTR', 'Entertainment'),
+        ('HEAL', 'Health'),
+        ('MISC', 'Miscellaneous'),
+    ]
+
     # blank=True tells Django's validation layer (form, admin etc) that it's okay
     # for it to be blank.
     id = models.AutoField(primary_key=True)
@@ -26,9 +36,7 @@ class Budget(models.Model):
                                  decimal_places=2,
                                  default=0.00, validators=[MinValueValidator(Decimal('0.00'))],
                                  help_text="Amount in your currency (e.g. 1234.56)")
-    category = models.CharField(max_length=50,
-                                blank=True,
-                                help_text="e.g. 'Groceries', 'Rent', 'Entertainment'")
+    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES)
     duration = models.CharField(max_length=50,
                                 blank=True,
                                 help_text="weekly, monthly, annually")

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Budget
+from .services import get_budget_warnings
 
 # Create your views here.
 def index(request):
@@ -13,8 +14,11 @@ def index(request):
     #more info on page 155
     #provides various methods to perform database operations such as creating, updating, deleting, and retrieving objects.
     template_data['Budgets'] = Budget.objects.all()
+
+    budget_warning = get_budget_warnings(request.user)
     return render(request, 'budgets/index.html',
-                  {'template_data' : template_data})
+                  {'template_data' : template_data,
+                        'budget_warning' : budget_warning})
 
 @login_required
 def create_budget(request):
@@ -36,15 +40,11 @@ def create_budget(request):
 
         exists = Budget.objects.filter(
             user=request.user,
-            title=b.title,
-            description=b.description,
             category=b.category,
-            duration=b.duration,
-            amount=b.amount
         ).exists()
 
         if exists:
-            form_error = "You already have a budget with exactly those details."
+            form_error = f"You already have a budget for this category: {b.category}"
         else:
             b.save()
             return redirect("Budgets.index")

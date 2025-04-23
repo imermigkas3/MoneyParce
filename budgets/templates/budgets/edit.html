@@ -28,19 +28,19 @@
 
                     <label for="id_category" class="form-label">Category</label>
                     <select name="category" id="id_category" class="form-select" required>
-                        <option value="">— Select a category —</option>
-                        <option value="Food" {% if budget.category == "Food" %}selected{% endif %}>Food</option>
-                        <option value="Rent" {% if budget.category == "Rent" %}selected{% endif %}>Rent</option>
-                        <option value="Utilities" {% if budget.category == "Utilities" %}selected{% endif %}>Utilities</option>
-                        <option value="Transportation" {% if budget.category == "Transportation" %}selected{% endif %}>Transportation</option>
-                        <option value="Entertainment" {% if budget.category == "Entertainment" %}selected{% endif %}>Entertainment</option>
-                        <option value="Health" {% if budget.category == "Health" %}selected{% endif %}>Health</option>
-                        <option value="Miscellaneous">Other</option>
+                        <option value="" disabled>— Select a category —</option>
+                        <option value="FOOD" {% if budget.category == "FOOD" %}selected{% endif %}>Food</option>
+                        <option value="RENT" {% if budget.category == "RENT" %}selected{% endif %}>Rent</option>
+                        <option value="UTIL" {% if budget.category == "UTIL" %}selected{% endif %}>Utilities</option>
+                        <option value="TRAN" {% if budget.category == "TRAN" %}selected{% endif %}>Transportation</option>
+                        <option value="ENTR" {% if budget.category == "ENTR" %}selected{% endif %}>Entertainment</option>
+                        <option value="HEAL" {% if budget.category == "HEAL" %}selected{% endif %}>Health</option>
+                        <option value="MISC">Other</option>
                     </select>
 
                     <label for="id_duration" class="form-label">Duration</label>
                     <select name="duration" id="id_duration" class="form-select" required>
-                        <option value="">— Select a duration —</option>
+                        <option value="" disabled>— Select a duration —</option>
                         <option value="Weekly" {% if budget.duration == "Weekly" %}selected{% endif %}>Weekly</option>
                         <option value="Monthly" {% if budget.duration == "Monthly" %}selected{% endif %}>Monthly</option>
                         <option value="Annually" {% if budget.duration == "Annually" %}selected{% endif %}>Annually</option>

@@ -3,9 +3,18 @@
     background-size: 100% auto;
 }
 
+/* Special fix for mobile screens */
+@media (max-width: 768px) {
+    .password-reset-container {
+        background-size: 100% 100% !important;
+        background-position: top center !important;
+        width: 100vw !important;
+    }
+}
+
 .password-reset-container {
-    background: url("/static/img/passwordreset.PNG") no-repeat center center;
-    background-size: cover;
+    background: url("../img/passwordreset.png") no-repeat center center;
+    background-size: cover; !important;
     min-height: 100vh;
     width: 100vw;
     max-width: 100%;
@@ -67,7 +76,7 @@
 
 .password-reset-done {
     background:
-        url("/static/img/passwordreset.PNG") no-repeat center center;
+        url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -86,7 +95,7 @@
 
 .password-reset-confirm {
     background:
-        url("/static/img/passwordreset.PNG") no-repeat center center;
+        url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -127,7 +136,7 @@
 
 .password-reset-complete {
     background:
-        url("/static/img/passwordreset.PNG") no-repeat center center;
+        url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;

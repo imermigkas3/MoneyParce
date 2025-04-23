@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from .forms import CustomUserCreationForm, CustomErrorList
 from django.contrib.auth.decorators import login_required
-from .models import Income
-from .forms import IncomeForm
+from .forms import IncomeForm, UserProfileForm
+from .models import Income, UserProfile
+from django.contrib.auth.models import User
 
 @login_required
 def logout(request):
@@ -49,18 +50,29 @@ def profile(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    income, created = Income.objects.get_or_create(
+    # Handle Income
+    income, created_income = Income.objects.get_or_create(
         user=request.user,
-        defaults={'amount': 0}  # Provide default amount when creating new record
+        defaults={'amount': 0}
     )
+    income_form = IncomeForm(instance=income)
+
+    # Handle User Profile
+    user_profile, created_profile = UserProfile.objects.get_or_create(user=request.user)
+    profile_form = UserProfileForm(instance=user_profile)
 
     if request.method == 'POST':
-        form = IncomeForm(request.POST, instance=income)
-        if form.is_valid():
-            form.save()
-        else:
-            form = IncomeForm(instance=income)
-    else:
-        form = IncomeForm(instance=income)
+        if 'income_submit' in request.POST:
+            income_form = IncomeForm(request.POST, instance=income)
+            if income_form.is_valid():
+                income_form.save()
+        elif 'profile_submit' in request.POST:
+            profile_form = UserProfileForm(request.POST, instance=user_profile)
+            if profile_form.is_valid():
+                profile_form.save()
 
-    return render(request, 'accounts/profile.html', {'form': form, 'current_income': income.amount})
+    return render(request, 'accounts/profile.html', {
+        'income_form': income_form,
+        'profile_form': profile_form,
+        'current_income': income.amount,
+    })

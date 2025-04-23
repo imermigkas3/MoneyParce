@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
-from .models import Income
+from .models import Income, UserProfile
 
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth import get_user_model
@@ -50,3 +50,8 @@ class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
         fields = ['amount']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['first_name', 'last_name', 'status']

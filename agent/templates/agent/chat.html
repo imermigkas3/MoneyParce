@@ -10,19 +10,21 @@
                             </div>
                         </div>
                         <div class="card-body overflow-auto" style="display: flex; flex-direction: column-reverse;">
-                            <div>
+                            <div id="chat-box">
                                 {% for message in message_list %}
                                     <div class="mb-4 rounded-2 border border-gray"
                                          style="background-color: lightgray;">
-                                        <div class="p-2">
-                                            {{ message }}
-                                        </div>
+                                        {% if forloop.counter0|divisibleby:2 %}
+                                            <div class="p-2"><b>You: </b> {{ message }}</div>
+                                        {% else %}
+                                            <div class="p-2"><b>Agent: </b>{{ message }}</div>
+                                        {% endif %}
                                     </div>
                                 {% endfor %}
                             </div>
                         </div>
                         <div class="card-footer">
-                            <form method="POST">
+                            <form id="chat-form" method="POST">
                                 {% csrf_token %}
                                 {{ form }}
                             </form>
@@ -31,4 +33,47 @@
                 </div>
         </div>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('chat-form');
+        const messageInput = document.getElementById('id_your_message');
+        const chatBox = document.getElementById('chat-box');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userMessage = messageInput.value.trim();
+            if (!userMessage) return;
+
+            messageInput.value = '';
+
+            // show user's message
+            chatBox.insertAdjacentHTML('beforeend', `
+                <div class="mb-4 rounded-2 border border-gray" style="background-color: lightgray;">
+                    <div class="p-2">
+                        <b>You: </b>${userMessage}
+                    </div>
+                </div>
+            `);
+
+            const response = await fetch('send-message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `your_message=${userMessage}`
+            });
+
+            // show Gemini's response
+            const data = await response.json();
+            chatBox.insertAdjacentHTML('beforeend', `
+                <div class="mb-4 rounded-2 border border-gray" style="background-color: lightgray;">
+                    <div class="p-2">
+                        <b>Agent: </b>${data.response}
+                    </div>
+                </div>
+            `);
+        })
+    })
+    </script>
 {% endblock %}

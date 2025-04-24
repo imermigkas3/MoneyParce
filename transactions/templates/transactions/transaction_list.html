@@ -35,7 +35,33 @@
   {% else %}
     <p class="text-muted">No transactions yet. Time to add one!</p>
   {% endif %}
-  </div>
+
+    <hr class="mt-5">
+      <h3 class="mt-4 mb-3">Linked Bank Transactions (Plaid)</h3>
+      <a href="{% url 'fetch_bank_transactions' %}" class="btn btn-info mb-3">↻ Refresh Bank Transactions</a>
+
+      {% if bank_transactions %}
+        <ul class="list-group">
+          {% for transaction in bank_transactions %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ transaction.date }}</strong> – {{ transaction.name }} – ${{ transaction.amount }}
+                {% if transaction.category %}
+                  <span class="badge rounded-pill bg-info text-dark">{{ transaction.category }}</span>
+                {% endif %}
+                {% if transaction.pending %}
+                  <span class="badge bg-warning text-dark">Pending</span>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No linked transactions found from your bank account.</p>
+      {% endif %}
+    </div>
+
+
   <div class="col-4">
     <div class="container mt-4 border border-success border-3 rounded-4">
     <form method="get" class="mb-4">

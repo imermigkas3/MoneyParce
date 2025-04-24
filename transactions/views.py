@@ -1,15 +1,23 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Transaction, BankTransaction
+from .forms import TransactionForm
+from django.shortcuts import get_object_or_404
+from plaid.model.transactions_get_request import TransactionsGetRequest
+from plaid.model.transactions_get_request_options import TransactionsGetRequestOptions
+from datetime import datetime, timedelta
+from accounts.models import UserProfile
+from plaid_client import client
+
 from django.http import JsonResponse
 from django.db.models import Sum
 from django.utils.timezone import now
 from datetime import timedelta
 from collections import OrderedDict
-from .forms import TransactionForm
 from analytics.models import GraphGenerationLog
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from budgets.models import Budget
-from transactions.models import Transaction
+
 
 
 @login_required
@@ -34,13 +42,19 @@ def add_transaction(request):
 @login_required
 def transaction_list(request):
     selected_categories = request.GET.getlist('category')
+
+    # Manual entries
     if selected_categories:
         transactions = Transaction.objects.filter(user=request.user, category__in=selected_categories)
     else:
         transactions = Transaction.objects.filter(user=request.user)
 
+    # Plaid-linked entries
+    bank_transactions = BankTransaction.objects.filter(user=request.user).order_by('-date')
+
     context = {
         'transactions': transactions,
+        'bank_transactions': bank_transactions,
         'category_choices': [
             ('FOOD', 'Food'),
             ('RENT', 'Rent'),
@@ -75,6 +89,44 @@ def delete_transaction(request, pk):
     return render(request, 'transactions/delete_transaction.html', {'transaction': transaction})
 
 @login_required
+
+def fetch_bank_transactions(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        access_token = user_profile.access_token
+
+        start_date = (datetime.now() - timedelta(days=30)).date()
+        end_date = datetime.now().date()
+
+        request_obj = TransactionsGetRequest(
+            access_token=access_token,
+            start_date=start_date,
+            end_date=end_date,
+            options=TransactionsGetRequestOptions(count=100)
+        )
+
+        response = client.transactions_get(request_obj)
+
+        for txn in response['transactions']:
+            _, created = BankTransaction.objects.get_or_create(
+                user=request.user,
+                plaid_transaction_id=txn['transaction_id'],
+                defaults={
+                    'name': txn['name'],
+                    'amount': txn['amount'],
+                    'date': txn['date'],
+                    'account_name': txn['account_id'],
+                    'category': " / ".join(txn.get('category', [])) if txn.get('category') else "",
+                    'pending': txn.get('pending', False)
+                }
+            )
+
+        return redirect('transaction_list')
+
+    except Exception as e:
+        print("Error fetching Plaid transactions:", e)
+        return redirect('transaction_list')
+
 def user_report_page(request):
     return render(request, 'transactions/report.html')
 
@@ -155,3 +207,4 @@ def report_view(request):
     }
 
     return render(request, 'transactions/report.html', context)
+

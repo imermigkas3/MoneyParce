@@ -41,12 +41,12 @@
                         <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
                     </div>
                     <div class="d-flex justify-content-end" style="width: 33%;">
-                        <button class="btn btn-primary">Share</button>
+                        <button id="share-button" class="btn btn-primary">Share</button>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div id="makepdf" class="row">
                 <!-- Pie Chart Card -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm">
@@ -154,5 +154,53 @@ function loadReportData(timeRange = "all") {
 }
 
 loadReportData("all");
+
+// sharing feature
+let button = document.getElementById("share-button");
+let makepdf = document.getElementById("makepdf");
+
+button.addEventListener("click", () => {
+
+    const pieChartImgData = pieChartInstance.toBase64Image();
+    const lineChartImgData = lineChartInstance.toBase64Image();
+
+    let contentToPrint = makepdf.cloneNode(true);
+
+    let pieCanvas = contentToPrint.querySelector('#pieChart');
+    let lineCanvas = contentToPrint.querySelector('#lineChart');
+
+    let pieImg = document.createElement('img');
+    pieImg.src = pieChartImgData;
+    pieImg.style.maxWidth = '50%'; // Maintain responsiveness
+    pieImg.style.height = 'auto';
+
+    let lineImg = document.createElement('img');
+    lineImg.src = lineChartImgData;
+    lineImg.style.maxWidth = '50%'; // Maintain responsiveness
+    lineImg.style.height = 'auto';
+
+    pieCanvas.parentNode.replaceChild(pieImg, pieCanvas);
+    lineCanvas.parentNode.replaceChild(lineImg, lineCanvas);
+
+    let htmlToPrint = `
+        <html>
+        <head>
+        <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+        </head>
+        <body>
+        ${contentToPrint.innerHTML}
+        </body>
+        </html>
+    `
+    let myWindow = window.open("", "PRINT", "height=600,width=800"); // Adjust size as needed
+    myWindow.document.write(htmlToPrint);
+    myWindow.document.close();
+    myWindow.focus();
+    myWindow.print();
+    myWindow.close();
+
+    return true;
+})
 </script>
 {% endblock %}

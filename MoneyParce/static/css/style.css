@@ -17,6 +17,45 @@
     overflow: hidden;
 }
 
+.password-reset-done {
+    background: url("../img/passwordreset.png") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.password-reset-confirm {
+    background: url("../img/passwordreset.png") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.password-reset-complete {
+    background: url("../img/passwordreset.png") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
 .password-reset-card {
     max-width: 500px;
     width: 100%;
@@ -65,48 +104,37 @@
     text-decoration: underline;
 }
 
-.password-reset-done {
-    background: url("../img/passwordreset.png") no-repeat center center;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.password-reset-confirm {
-    background: url("../img/passwordreset.png") no-repeat center center;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.password-reset-complete {
-    background: url("../img/passwordreset.png") no-repeat center center;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
 @media (max-width: 768px) {
-    .bg-index {
+    .password-reset-container {
         background-size: contain;
         background-position: top center;
+        min-height: 80vh;
+        background-attachment: scroll;
+        background-color: #3e7c53;
     }
 
-    .password-reset-container,
-    .password-reset-done,
-    .password-reset-confirm,
+    .password-reset-done {
+        background-size: contain;
+        background-position: top center;
+        min-height: 80vh;
+        background-attachment: scroll;
+        background-color: #3e7c53;
+    }
+
+    .password-reset-confirm {
+        background-size: contain;
+        background-position: top center;
+        min-height: 80vh;
+        background-attachment: scroll;
+        background-color: #3e7c53;
+    }
+
     .password-reset-complete {
-        background-size: cover;
-        background-position: center;
+        background-size: contain;
+        background-position: top center;
+        min-height: 80vh;
+        background-attachment: scroll;
+        background-color: #3e7c53;
     }
 }
 

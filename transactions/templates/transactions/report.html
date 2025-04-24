@@ -37,27 +37,40 @@
         <span id="basicTip">Try limiting spending in this category to save!</span>
     </div>
 
-    <div class="row">
-        <!-- Pie Chart Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header text-center fw-bold">
-                    Spending by Category
-                </div>
-                <div class="card-body text-center">
-                    <canvas id="pieChart" width="350" height="350"></canvas>
+    <!-- Graph Reports Section -->
+    <div class="card shadow mb-5">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <h4>Graphical Reports</h4>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
+                    <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Line Chart Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header text-center fw-bold">
-                    Monthly Spending Trends
+            <div class="row">
+                <!-- Pie Chart Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header text-center fw-bold">
+                            Spending by Category
+                        </div>
+                        <div class="card-body text-center">
+                            <canvas id="pieChart" width="350" height="350"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body text-center">
-                    <canvas id="lineChart" width="350" height="350"></canvas>
+
+                <!-- Line Chart Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header text-center fw-bold">
+                            Monthly Spending Trends
+                        </div>
+                        <div class="card-body text-center">
+                            <canvas id="lineChart" width="350" height="350"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,9 +156,5 @@ function loadReportData(timeRange = "all") {
 }
 
 loadReportData("all");
-
-document.getElementById("timeRange").addEventListener("change", function () {
-    loadReportData(this.value);
-});
 </script>
 {% endblock %}

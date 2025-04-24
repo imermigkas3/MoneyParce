@@ -10,7 +10,7 @@
     <hr>
     <div>
         <h2>Your Income</h2>
-        <p>Your current income is: ${{ current_income }}</p>
+        <p>Your current monthly income is: ${{ current_income }}</p>
     </div>
     <div>
         <form method="POST">
@@ -19,5 +19,90 @@
             <button type="submit" name="income_submit">Update Income</button>
         </form>
     </div>
+    <hr>
+  <h2>Your Linked Accounts</h2>
+    {% if balances %}
+
+  <div class="mt-4 mb-4">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for account in balances %}
+        <div class="col">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ account.name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ account.official_name }}</h6>
+              <p class="card-text">
+                <strong>Type:</strong> {{ account.type|capfirst }} / {{ account.subtype|capfirst }}<br>
+                <strong>Balance:</strong> ${{ account.balances.current }}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <p>No linked accounts yet.</p>
+{% endif %}
 </div>
+
+<!-- Link Bank Account Button -->
+<button id="link-button">Link Bank Account</button>
+
+<!-- Plaid Script & Setup -->
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM loaded");
+
+  fetch("/accounts/create-link-token/")
+    .then(response => {
+      console.log("Got response from /create-link-token");
+      return response.json();
+    })
+    .then(data => {
+      console.log("Link token response:", data);
+
+      if (!data.link_token) {
+        console.error("No link_token in response");
+        return;
+      }
+
+      const handler = Plaid.create({
+        token: data.link_token,
+        onSuccess: function(public_token, metadata) {
+          console.log("Public Token:", public_token);
+          fetch("/accounts/exchange-public-token/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ public_token })
+          }).then(() => {
+            console.log("Exchanged token, reloading");
+            location.reload();
+          });
+        },
+        onExit: function(err, metadata) {
+          console.log("Plaid Link exited:", err, metadata);
+        }
+      });
+
+      const button = document.getElementById("link-button");
+      if (button) {
+        button.onclick = function () {
+          console.log("Opening Plaid Link");
+          handler.open();
+        };
+      } else {
+        console.error("Link button not found");
+      }
+    })
+    .catch(err => {
+      console.error("Error fetching link token:", err);
+    });
+});
+</script>
+
 {% endblock content %}

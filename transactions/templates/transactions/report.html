@@ -33,9 +33,16 @@
         <div class="card-body">
             <div class="text-center mb-4">
                 <h4>Graphical Reports</h4>
-                <div class="d-flex justify-content-center gap-3">
-                    <button class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
-                    <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                    <div style="width: 33%;"></div>
+
+                    <div class="d-flex gap-3 justify-content-center" style="width: 33%;">
+                        <button class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
+                        <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
+                    </div>
+                    <div class="d-flex justify-content-end" style="width: 33%;">
+                        <button class="btn btn-primary">Share</button>
+                    </div>
                 </div>
             </div>
 

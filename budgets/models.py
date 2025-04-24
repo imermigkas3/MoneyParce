@@ -44,4 +44,6 @@ class Budget(models.Model):
 
 
     def __str__(self):
-        return str(self.id) + ' - ' + self.title
+        return (f"{self.title} - {self.description} - Amount: {self.amount} - "
+                f"Category: {self.category} - Duration: {self.duration} - "
+                f"Created on: {self.date_created.isoformat()}")

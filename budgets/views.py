@@ -13,7 +13,7 @@ def index(request):
     #Expense.objects manager in Django that serves as the default interface to query the database table associated with the model.
     #more info on page 155
     #provides various methods to perform database operations such as creating, updating, deleting, and retrieving objects.
-    template_data['Budgets'] = Budget.objects.all()
+    template_data['Budgets'] = Budget.objects.filter(user=request.user)
 
     budget_warning = get_budget_warnings(request.user)
     return render(request, 'budgets/index.html',

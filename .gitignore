@@ -4,9 +4,9 @@ __pycache__/
 
 # Django
 *.log
-db.sqlite3
 media/
 staticfiles/
+db.sqlite3
 
 # IDEs
 .idea/

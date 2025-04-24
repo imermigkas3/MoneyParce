@@ -4,7 +4,7 @@ from google import genai
 from config import API_KEY
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from accounts.models import Income
+from accounts.models import Income, UserProfile
 from transactions.models import Transaction
 from budgets.models import Budget
 from analytics.models import GraphGenerationLog
@@ -30,6 +30,19 @@ def send_message(request):
         if not request.session['message_list']: # no messages have been sent yet
             income = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
             transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+            budget_list = Budget.objects.filter(user=request.user)
+            budgets = []
+            for b in budget_list:
+                budgets.append(str(b))
+            budgets = "\n".join(budgets)
+            first_name = ""
+            status_display = ""
+            try:
+                user_profile = request.user.userprofile
+                first_name = user_profile.first_name
+                status_display = user_profile.get_status_display()
+            except UserProfile.DoesNotExist:
+                pass  # User profile might not exist
             budgets = Budget.objects.filter(user=request.user)
             GraphGenerationLog.objects.create(
                 user=request.user,
@@ -38,6 +51,7 @@ def send_message(request):
             initial_prompt = f"""
             You are a financial advisor designed to serve the MoneyParce app. You are to help users of the MoneyParce app
             reach their financial goals. You are currently in a chat with a user who is looking to you for financial advice.
+            You are currently in a chat with a user named {first_name or 'User'} who is a {status_display or 'user'}.
             This user's income is { income }. The user's transactions are { transactions }. The user's budgets are 
             { budgets }.
     

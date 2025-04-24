@@ -35,9 +35,9 @@ def add_transaction(request):
 def transaction_list(request):
     selected_categories = request.GET.getlist('category')
     if selected_categories:
-        transactions = Transaction.objects.filter(category__in=selected_categories)
+        transactions = Transaction.objects.filter(user=request.user, category__in=selected_categories)
     else:
-        transactions = Transaction.objects.all()
+        transactions = Transaction.objects.filter(user=request.user)
 
     context = {
         'transactions': transactions,

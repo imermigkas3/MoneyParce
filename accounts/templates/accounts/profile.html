@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h2>Your Profile Information</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <button type="submit" name="profile_submit">Update Profile</button>
+    </form>
+    <hr>
+    <div>
+        <h2>Your Income</h2>
+        <p>Your current income is: ${{ current_income }}</p>
+    </div>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ income_form.as_p }}
+            <button type="submit" name="income_submit">Update Income</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

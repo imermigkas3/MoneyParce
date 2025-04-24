@@ -4,6 +4,8 @@ from django.db.models import Sum
 
 from budgets.models import Budget
 from transactions.models import Transaction
+import logging
+logger = logging.getLogger(__name__)
 
 
 def get_budget_warnings(user):
@@ -11,7 +13,7 @@ def get_budget_warnings(user):
     warning_categories = []
 
     for budget in budgets:
-        print(f"category={budget.category}, display={budget.get_category_display()}")
+        logger.debug(f"category={budget.category}, display={budget.get_category_display()}")
 
         category = budget.category
         total =  Transaction.objects.filter(user=user,

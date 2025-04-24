@@ -27,7 +27,11 @@ def send_message(request):
         if not request.session['message_list']: # no messages have been sent yet
             income = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
             transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-            budgets = Budget.objects.filter(user=request.user)
+            budget_list = Budget.objects.filter(user=request.user)
+            budgets = []
+            for b in budget_list:
+                budgets.append(str(b))
+            budgets = "\n".join(budgets)
             first_name = ""
             status_display = ""
             try:

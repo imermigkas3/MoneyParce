@@ -1,4 +1,4 @@
-.bg-index{
+.bg-index {
     background: url("../img/logo.png") no-repeat fixed;
     background-size: 100% auto;
 }
@@ -14,7 +14,7 @@
 
 .password-reset-container {
     background: url("../img/passwordreset.png") no-repeat center center;
-    background-size: cover; !important;
+    background-size: cover;
     min-height: 100vh;
     width: 100vw;
     max-width: 100%;
@@ -75,8 +75,7 @@
 }
 
 .password-reset-done {
-    background:
-        url("../img/passwordreset.png") no-repeat center center;
+    background: url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -94,8 +93,7 @@
 }
 
 .password-reset-confirm {
-    background:
-        url("../img/passwordreset.png") no-repeat center center;
+    background: url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -135,8 +133,7 @@
 }
 
 .password-reset-complete {
-    background:
-        url("../img/passwordreset.png") no-repeat center center;
+    background: url("../img/passwordreset.png") no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -177,6 +174,27 @@ html, body {
     max-width: 100%;
 }
 
+.custom-card {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 22rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 128, 0, 0.2);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
 
 
 

@@ -175,9 +175,12 @@ def user_report_data(request):
         .annotate(total=Sum('amount'))
     )
 
+    user_profile = UserProfile.objects.filter(user=request.user)[0]
+    user_name = user_profile.first_name + " " + user_profile.last_name
     return JsonResponse({
         'category_data': list(category_data),
         'monthly_data': monthly_data,
+        'report_user': user_name,
     })
 
 @login_required
@@ -203,7 +206,7 @@ def report_view(request):
 
     context = {
         'transactions': transactions,
-        'warnings': warnings,  # ✅ pass to report.html
+        'warnings': warnings,  # pass to report.html
     }
 
     return render(request, 'transactions/report.html', context)

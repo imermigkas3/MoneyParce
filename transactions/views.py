@@ -1,8 +1,16 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Transaction
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.db.models import Sum
+from django.utils.timezone import now
+from datetime import timedelta
+from collections import OrderedDict
 from .forms import TransactionForm
-from django.shortcuts import get_object_or_404
+from analytics.models import GraphGenerationLog
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from budgets.models import Budget
+from transactions.models import Transaction
+
 
 @login_required
 def add_transaction(request):
@@ -12,6 +20,11 @@ def add_transaction(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
+            GraphGenerationLog.objects.create(
+                user=request.user,
+                graph_type='transaction-update'
+            )
+
             return redirect('transaction_list')
     else:
         form = TransactionForm()
@@ -60,3 +73,85 @@ def delete_transaction(request, pk):
         transaction.delete()
         return redirect('transaction_list')
     return render(request, 'transactions/delete_transaction.html', {'transaction': transaction})
+
+@login_required
+def user_report_page(request):
+    return render(request, 'transactions/report.html')
+
+@login_required
+def user_report_data(request):
+    user = request.user
+    time_range = request.GET.get('range', 'all')
+
+    today = now()
+
+    if time_range == '3months':
+        start_date = today - timedelta(days=90)
+        transactions = Transaction.objects.filter(user=user, date__gte=start_date)
+
+        # Create monthly buckets for the past 3 months
+        monthly_data = OrderedDict()
+        for i in range(2, -1, -1):
+            month_date = today - timedelta(days=30 * i)
+            label = month_date.strftime('%B %Y')
+            monthly_data[label] = 0
+
+        for t in transactions:
+            if t.date:
+                label = t.date.strftime('%B %Y')
+                if label in monthly_data:
+                    monthly_data[label] += t.amount
+
+    else:  # all time
+        transactions = Transaction.objects.filter(user=user)
+
+        # Create monthly buckets for the past 12 months
+        monthly_data = OrderedDict()
+        for i in range(11, -1, -1):
+            month_date = today - timedelta(days=30 * i)
+            label = month_date.strftime('%B %Y')
+            monthly_data[label] = 0
+
+        for t in transactions:
+            if t.date:
+                label = t.date.strftime('%B %Y')
+                if label in monthly_data:
+                    monthly_data[label] += t.amount
+
+    category_data = (
+        transactions.values('category')
+        .annotate(total=Sum('amount'))
+    )
+
+    return JsonResponse({
+        'category_data': list(category_data),
+        'monthly_data': monthly_data,
+    })
+
+@login_required
+def report_view(request):
+    # Get all the user's transactions and budgets
+    transactions = Transaction.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user)
+
+    # Calculate total spent per category
+    category_totals = {}
+    for t in transactions:
+        if t.category in category_totals:
+            category_totals[t.category] += t.amount
+        else:
+            category_totals[t.category] = t.amount
+
+    # Generate warnings if any budget is exceeded
+    warnings = []
+    for budget in budgets:
+        spent = category_totals.get(budget.category, 0)
+        if spent > budget.amount:
+            warnings.append(f"You are exceeding your budget in {budget.category}. Consider reducing spending.")
+
+    context = {
+        'transactions': transactions,
+        'warnings': warnings,  # ✅ pass to report.html
+    }
+
+    return render(request, 'transactions/report.html', context)

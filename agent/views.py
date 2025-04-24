@@ -7,10 +7,13 @@ from django.views.decorators.csrf import csrf_exempt
 from accounts.models import Income, UserProfile
 from transactions.models import Transaction
 from budgets.models import Budget
+from analytics.models import GraphGenerationLog
 
 # Create your views here.
 client = genai.Client(api_key=API_KEY)
 gem_chat = client.chats.create(model="gemini-2.0-flash")
+
+
 def chat(request):
     if 'message_list' not in request.session:
         request.session['message_list'] = []
@@ -40,6 +43,11 @@ def send_message(request):
                 status_display = user_profile.get_status_display()
             except UserProfile.DoesNotExist:
                 pass  # User profile might not exist
+            budgets = Budget.objects.filter(user=request.user)
+            GraphGenerationLog.objects.create(
+                user=request.user,
+                graph_type='chat-graph'  # You can customize this label later
+            )
             initial_prompt = f"""
             You are a financial advisor designed to serve the MoneyParce app. You are to help users of the MoneyParce app
             reach their financial goals. You are currently in a chat with a user who is looking to you for financial advice.

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'budgets',
     'transactions',
     'agent',
+    'analytics',
 ]
 
 MIDDLEWARE = [

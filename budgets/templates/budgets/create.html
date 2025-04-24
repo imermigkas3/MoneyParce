@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+        {% if form_error %}
+                <div class="alert alert-danger">{{ form_error }}</div>  {# ← added error alert #}
+        {% endif %}
+        <!--Every time we submit this form it will send a post
+        request to the url associated with this name (remember a name is a way to
+         refer to a url in htis case it refers to 'budget/create/'-->
+            <form method="POST" action="{% url 'Budgets.create_budget' %}">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           placeholder="Enter title for the budget">
+
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="description" name="description"
+                           placeholder="description">
+
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" name="amount" min="0.01" step="0.01" class="form-control"
+                        inputmode="decimal"  pattern="^\d+(\.\d{1,2})?$" placeholder="e.g. 12.34" id="amount">
+                    <label for="id_category" class="form-label">Category</label>
+                    <select name="category" id="id_category" class="form-select" required>
+                        <option value="" disabled selected>— Select a category —</option>
+                        <option value="FOOD">Food</option>
+                        <option value="RENT">Rent</option>
+                        <option value="UTIL">Utilities</option>
+                        <option value="TRAN">Transportation</option>
+                        <option value="ENTR">Entertainment</option>
+                        <option value="HEAL">Health</option>
+                        <option value="MISC">Other</option>
+                    </select>
+
+                    <label for="id_duration" class="form-label">Duration</label>
+                    <select name="duration" id="id_duration" class="form-select" required>
+                        <option value="" disabled selected>— Select a duration —</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Annually">Annually</option>
+                    </select>
+                </div>
+                <button type="submit"
+                        class="btn bg-dark text-white">
+                    Create new budget
+                </button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

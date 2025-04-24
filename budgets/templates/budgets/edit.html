@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="p-3">
+        <div class="container">
+            <div class="row mt-3">
+                <div class="col mx-auto mb-3">
+                    <h2>Edit Budget</h2>
+                    <hr/>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           value="{{ budget.title }}">
+
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="description" name="description"
+                           value="{{ budget.description }}">
+
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" name="amount" min="0.01" step="0.01" class="form-control"
+                        inputmode="decimal"  pattern="^\d+(\.\d{1,2})?$" value="{{ budget.amount }}" id="amount">
+                        {% if form_error %}
+                                <div class="invalid-feedback">
+                            {{ form_error }}
+                            </div>
+                        {% endif %}
+
+                    <label for="id_category" class="form-label">Category</label>
+                    <select name="category" id="id_category" class="form-select" required>
+                        <option value="" disabled>— Select a category —</option>
+                        <option value="FOOD" {% if budget.category == "FOOD" %}selected{% endif %}>Food</option>
+                        <option value="RENT" {% if budget.category == "RENT" %}selected{% endif %}>Rent</option>
+                        <option value="UTIL" {% if budget.category == "UTIL" %}selected{% endif %}>Utilities</option>
+                        <option value="TRAN" {% if budget.category == "TRAN" %}selected{% endif %}>Transportation</option>
+                        <option value="ENTR" {% if budget.category == "ENTR" %}selected{% endif %}>Entertainment</option>
+                        <option value="HEAL" {% if budget.category == "HEAL" %}selected{% endif %}>Health</option>
+                        <option value="MISC">Other</option>
+                    </select>
+
+                    <label for="id_duration" class="form-label">Duration</label>
+                    <select name="duration" id="id_duration" class="form-select" required>
+                        <option value="" disabled>— Select a duration —</option>
+                        <option value="Weekly" {% if budget.duration == "Weekly" %}selected{% endif %}>Weekly</option>
+                        <option value="Monthly" {% if budget.duration == "Monthly" %}selected{% endif %}>Monthly</option>
+                        <option value="Annually" {% if budget.duration == "Annually" %}selected{% endif %}>Annually</option>
+                    </select>
+                </div>
+
+                        <div class="text-start">
+                            <button type="submit"
+                            class="btn bg-dark text-white">Edit Budget
+                            </button>
+
+                            <a href="{% url 'Budgets.index' %}"
+                               class="btn btn-secondary ms-2">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

@@ -2,88 +2,43 @@
 <html lang="en">
 {% load static %}
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1" />
     <title>{% block title %}My Site{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <style>
-      /* Ensure consistent font across the site matching your content */
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #abf7b1;
-        color: #1e3a1e;
-      }
-      /* Navbar brand image spacing */
-      .navbar-brand img {
-        max-height: 80px;
-        width: auto;
-      }
-      /* Navbar links styles: use your green-themed accent color */
-      .navbar-nav .nav-link {
-        font-weight: 600;
-        font-size: 1rem;
-        color: #c8dfc8;
-        transition: color 0.3s ease;
-        padding: 0.5rem 0.75rem;
-      }
-      .navbar-nav .nav-link:hover,
-      .navbar-nav .nav-link:focus {
-        color: #a1d290;
-        text-decoration: none;
-      }
-      /* Divider vertical line styling matches nav */
-      .vr.bg-white {
-        opacity: 0.75;
-      }
-      /* Responsive padding for container */
-      .container.mt-4 {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-      }
-      @media (max-width: 576px) {
-        /* Adjust nav link font size on mobile */
-        .navbar-nav .nav-link {
-          font-size: 0.9rem;
-        }
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-<body>
+<body style="background-color: #abf7b1;">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
-        <img src="{% static 'img/logo.png' %}" alt="MoneyParce logo" />
+          <img src="{% static 'img/logo.png' %}" alt='MoneyParce logo' height='80'>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+              aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ms-auto navbar-ml">
-          <a class="nav-link" href="{% url 'home.index' %}">Home</a>
-          <a class="nav-link" href="{% url 'home.about' %}">About</a>
+            <a class="nav-link" href="{% url 'home.index' %}">Home</a>
+            <a class="nav-link" href="{% url 'home.about' %}">About</a>
 
           <div class="vr bg-white mx-2 d-none d-lg-block"></div>
 
           {% if user.is_authenticated %}
-          <a class="nav-link" href="{% url 'accounts.profile' %}">Profile</a>
-          <a class="nav-link" href="/budgets">Budgets</a>
-          <a class="nav-link" href="{% url 'transaction_list' %}">Transactions</a>
-          <a class="nav-link" href="#">Reports</a>
-          <a class="nav-link" href="{% url 'agent.chat' %}">Advice</a>
-          <a class="nav-link" href="{% url 'accounts.logout' %}">Logout ({{ user.username }})</a>
+            <a class="nav-link" href="{% url 'accounts.profile' %}">Profile</a>
+            <a class="nav-link" href="{% url 'agent.chat' %}">Agent</a>
+            <a class="nav-link" href="{% url 'Budgets.index' %}">Budgets</a>
+            <a class="nav-link" href="{% url 'transaction_list' %}">Transactions</a>
+            <a class="nav-link" href="{% url 'accounts.logout' %}">
+              Logout ({{ user.username }})
+            </a>
           {% else %}
-          <a class="nav-link" href="{% url 'accounts.login' %}">Login</a>
-          <a class="nav-link" href="{% url 'accounts.signup' %}">Sign Up</a>
+            <a class="nav-link" href="{% url 'accounts.login' %}">Login</a>
+            <a class="nav-link" href="{% url 'accounts.signup' %}">Sign Up</a>
           {% endif %}
         </div>
       </div>
@@ -91,9 +46,8 @@
   </nav>
 
   <div class="container mt-4">
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -10,6 +10,17 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">My Financial Report</h2>
 
+    {% if warnings %}
+      <div class="alert alert-warning mt-3">
+        <strong>⚠ Budget Alert:</strong>
+        <ul class="mb-0">
+          {% for warning in warnings %}
+            <li>{{ warning }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
     <!-- Time Range Filter -->
     <form id="timeFilterForm" class="mb-4 text-center">
         <label for="timeRange" class="form-label fw-bold">Select Time Range:</label>

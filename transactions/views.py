@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Sum
 from django.utils.timezone import now
 from datetime import timedelta
-import calendar
 from collections import OrderedDict
-from .models import Transaction
 from .forms import TransactionForm
+from analytics.models import GraphGenerationLog
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from budgets.models import Budget
+from transactions.models import Transaction
+
 
 @login_required
 def add_transaction(request):
@@ -17,10 +20,16 @@ def add_transaction(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
+            GraphGenerationLog.objects.create(
+                user=request.user,
+                graph_type='transaction-update'
+            )
+
             return redirect('transaction_list')
     else:
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
+
 
 @login_required
 def transaction_list(request):
@@ -118,3 +127,31 @@ def user_report_data(request):
         'category_data': list(category_data),
         'monthly_data': monthly_data,
     })
+
+@login_required
+def report_view(request):
+    # Get all the user's transactions and budgets
+    transactions = Transaction.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user)
+
+    # Calculate total spent per category
+    category_totals = {}
+    for t in transactions:
+        if t.category in category_totals:
+            category_totals[t.category] += t.amount
+        else:
+            category_totals[t.category] = t.amount
+
+    # Generate warnings if any budget is exceeded
+    warnings = []
+    for budget in budgets:
+        spent = category_totals.get(budget.category, 0)
+        if spent > budget.amount:
+            warnings.append(f"You are exceeding your budget in {budget.category}. Consider reducing spending.")
+
+    context = {
+        'transactions': transactions,
+        'warnings': warnings,  # ✅ pass to report.html
+    }
+
+    return render(request, 'transactions/report.html', context)

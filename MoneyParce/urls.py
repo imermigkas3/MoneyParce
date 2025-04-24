@@ -30,4 +30,6 @@ urlpatterns = [
     path('budgets/', include('budgets.urls')),
     path('agent/', include('agent.urls')),
     path('transactions/', include('transactions.urls')),
+    path('', include('analytics.urls')),
+
 ]

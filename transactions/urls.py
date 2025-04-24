@@ -7,6 +7,7 @@ urlpatterns = [
     path('edit/<int:pk>/', views.edit_transaction, name='edit_transaction'),
     path('delete/<int:pk>/', views.delete_transaction, name='delete_transaction'),
     path('report-data/', views.user_report_data, name='user-report-data'),
-    path('report/', views.user_report_page, name='user-report-page'),
 
+    # Updated line below:
+    path('report/', views.report_view, name='user-report-page'),
 ]

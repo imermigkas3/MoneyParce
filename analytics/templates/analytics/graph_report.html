@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Graph Generation Report (Last 30 Days)</h2>
+<table class="table">
+  <thead>
+    <tr><th>Graph Type</th><th>Count</th></tr>
+  </thead>
+  <tbody>
+    {% for item in report %}
+    <tr><td>{{ item.graph_type }}</td><td>{{ item.total }}</td></tr>
+    {% empty %}
+    <tr><td colspan="2">No graph generation data yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

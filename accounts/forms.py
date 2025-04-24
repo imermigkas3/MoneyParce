@@ -47,11 +47,43 @@ class CustomPasswordResetForm(PasswordResetForm):
         return email
 
 class IncomeForm(forms.ModelForm):
+    amount = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=0,  # Ensure it's a positive number
+        error_messages={'min_value': 'Please enter a positive income amount.'}
+    )
+
     class Meta:
         model = Income
         fields = ['amount']
 
 class UserProfileForm(forms.ModelForm):
+    email = forms.EmailField(required=True, label='Email Address')
+
     class Meta:
         model = UserProfile
         fields = ['first_name', 'last_name', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.user:
+            self.fields['email'].initial = self.instance.user.email
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if self.instance and self.instance.user and self.instance.user.email == email:
+            return email  # No change, so it's valid
+
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("This email address is already in use.")
+        return email
+
+    def save(self, commit=True):
+        user_profile = super().save(commit=False)
+        if self.has_changed() and 'email' in self.changed_data:
+            user_profile.user.email = self.cleaned_data['email']
+            user_profile.user.save()
+        if commit:
+            user_profile.save()
+        return user_profile

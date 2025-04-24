@@ -72,7 +72,7 @@
           <a class="nav-link" href="{% url 'accounts.profile' %}">Profile</a>
           <a class="nav-link" href="/budgets">Budgets</a>
           <a class="nav-link" href="{% url 'transaction_list' %}">Transactions</a>
-          <a class="nav-link" href="#">Reports</a>
+          <a class="nav-link" href="{% url 'user-report-page' %}">Reports</a>
           <a class="nav-link" href="{% url 'agent.chat' %}">Advice</a>
           <a class="nav-link" href="{% url 'accounts.logout' %}">Logout ({{ user.username }})</a>
           {% else %}

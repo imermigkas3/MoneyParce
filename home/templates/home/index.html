@@ -1,39 +1,83 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="p-3">
-        <div class="container">
-            <div class="row mt-5">
-                <div class="col mx-auto text-center mb-3">
-                    <h1>Welcome to MoneyParce!</h1>
-                    <h4>Smarter Spending Starts Here.</h4>
-                </div>
-            </div>
+    <style>
+        .card-body ul {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+            color: #2f4f2f;
+            padding-left: 1.2rem;
+            line-height: 1.5;
+        }
+        .hover-shadow {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .hover-shadow:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+    </style>
+    <style>
+        .welcome-text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1e3a1e;
+            text-align: center;
+            margin: 3rem 0 2rem 0;
+        }
+        .welcome-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .welcome-text h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #3a6d3a;
+            font-style: italic;
+  }
+  @media (max-width: 576px) {
+    .welcome-text h1 {
+      font-size: 2rem;
+    }
+    .welcome-text h4 {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+
+    <div class="welcome-text">
+        <h1>Welcome to MoneyParce!</h1>
+        <h4>Smarter Spending Starts Here.</h4>
+    </div>
             {% if user.is_authenticated %}
                 <div class="row mt-5">
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'home.about' %}" role="button">
-                                    Learn About MoneyParce 📚</a>
+                                    Learn About MoneyParce 📚
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Features to set budgets and track spending in real time.</li>
                                     <li>Graphic visualizations to see how your money is being spent.</li>
-                                    <li>Converse with AI to get financial tips and learn how to best save your money.</li>
+                                    <li>Converse with AI to get financial tips and save your money.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'transaction_list' %}" role="button">
-                                     View My Transactions 💰</a>
+                                    View My Transactions 💰
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>View all your most recent transactions and expenses.</li>
                                     <li>Categorize your expenses to organize how your money gets spent.</li>
                                     <li>Create, edit, and delete transactions to stay up to date.</li>
@@ -43,12 +87,14 @@
                     </div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
-                                <a class="btn btn-outline-success btn-lg w-auto" href="/budgets" role="button"> View My Budgets 💵</a>
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
+                                <a class="btn btn-outline-success btn-lg w-auto" href="/budgets" role="button">
+                                    View My Budgets 💵
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Create customized budgets to match your financial goals.</li>
                                     <li>Track your spending in real time and stay on target.</li>
                                     <li>Automatically adjust budgets based on income and expenses.</li>
@@ -59,16 +105,17 @@
                 </div>
 
                 <div class="row mt-5">
-                    <div class = "col-2"></div>
+                    <div class="col-2"></div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="#" role="button">
-                                    Generate a Graphical Report 📈</a>
+                                    Generate a Graphical Report 📈
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Visualize your financial trends with detailed charts and graphs.</li>
                                     <li>Export comprehensive reports for review or sharing.</li>
                                     <li>Spot patterns and track progress toward your financial goals.</li>
@@ -78,13 +125,14 @@
                     </div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'agent.chat' %}" role="button">
-                                    Financial Advice 💬 </a>
+                                    Financial Advice 💬
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Converse with our AI chatbot to get personally tailored financial advice.</li>
                                     <li>Get AI analysis based on your spending and budget goals.</li>
                                     <li>Receive budget tips, saving strategies, and investment suggestions.</li>
@@ -92,18 +140,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class = "col-2"></div>
+
+                    <div class="col-2"></div>
                 </div>
-                {% else %}
-                    <div class="row mt-5">
+
+            {% else %}
+                <div class="row mt-5">
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'home.about' %}" role="button">
-                                    📚 Learn About MoneyParce</a>
+                                    📚 Learn About MoneyParce
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Features to set budgets and track spending in real time.</li>
                                     <li>Graphic visualizations to see how your money is being spent.</li>
                                     <li>Converse with AI to get financial tips and learn how to best save your money.</li>
@@ -113,13 +164,14 @@
                     </div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
                                 <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'accounts.login' %}" role="button">
-                                    Login</a>
+                                    Login
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Access your secure data on your financial transactions.</li>
                                     <li>View your most up-to-date financial information.</li>
                                     <li>Create, edit, and delete your financial tracker to stay up to date.</li>
@@ -129,12 +181,14 @@
                     </div>
 
                     <div class="col text-center">
-                        <div class="card bg-light mb-3" style="max-width: 22rem;">
-                            <div class="card-header">
-                                <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'accounts.signup' %}" role="button"> Sign Up</a>
+                        <div class="card bg-light mb-3 rounded-4 shadow-lg border-0 p-4 hover-shadow" style="max-width: 22rem;">
+                            <div class="card-header bg-white border-0 rounded-4">
+                                <a class="btn btn-outline-success btn-lg w-auto" href="{% url 'accounts.signup' %}" role="button">
+                                    Sign Up
+                                </a>
                             </div>
-                            <div class="card-body">
-                                <ul class = "mt-3">
+                            <div class="card-body text-start">
+                                <ul class="mt-3">
                                     <li>Join the MoneyParce community and leverage our technology.</li>
                                     <li>Take advantage of AI functionality to improve your finances.</li>
                                     <li>Become a MoneyParce member with a few clicks!</li>
@@ -142,10 +196,10 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
+    </div>
 {% endblock content %}
+
 

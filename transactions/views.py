@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, BankTransaction
@@ -8,6 +7,7 @@ from plaid.model.transactions_get_request import TransactionsGetRequest
 from plaid.model.transactions_get_request_options import TransactionsGetRequestOptions
 from datetime import datetime, timedelta
 from accounts.models import UserProfile
+from accounts.models import Income
 from plaid_client import client
 
 from django.http import JsonResponse
@@ -17,7 +17,14 @@ from datetime import timedelta
 from collections import OrderedDict
 from analytics.models import GraphGenerationLog
 from budgets.models import Budget
+from .forms import EmailForm
 
+from django.conf import settings
+from django.core.mail import EmailMessage
+import json
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
 
 
 @login_required
@@ -201,10 +208,66 @@ def report_view(request):
         if spent > budget.amount:
             warnings.append(f"You are exceeding your budget in {budget.category}. Consider reducing spending.")
 
+    email_form = EmailForm()
+
     context = {
         'transactions': transactions,
-        'warnings': warnings,  # ✅ pass to report.html
+        'warnings': warnings,  # pass to report.html
+        'form': email_form,
     }
-
     return render(request, 'transactions/report.html', context)
 
+def render_to_pdf(template_src, context):
+    html = render_to_string(template_src, context)
+    result = BytesIO()
+    # Encode HTML to UTF-8 bytes before passing to pisaDocument
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encoding='UTF-8')
+    return result.getvalue()
+
+def send_email(request):
+    data = json.loads(request.body)
+    form = EmailForm({'email_address': data.get('email')})
+    if not form.is_valid():
+        return JsonResponse({'error': 'Invalid email'}, status=400)
+    user_profile = UserProfile.objects.filter(user=request.user)[0]
+    user_name = user_profile.first_name + " " + user_profile.last_name
+
+    user_status = user_profile.status
+    income, created = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')[:10] # only want recent 10
+    budget_list = Budget.objects.filter(user=request.user)
+
+    subject = f"Financial Report from {user_name}"
+    body = f"{user_name}, a MoneyParce user, has shared the attached financial report with you."
+    from_email = settings.DEFAULT_FROM_EMAIL
+
+    email_address = data.get('email')
+    recipient_list = [email_address]
+
+    pie_chart = data.get('pieChartImg')
+    line_chart = data.get('lineChartImg')
+
+    pdf_filename = f"Financial_Report_{user_profile.first_name}_{user_profile.last_name}"
+
+    pdf_template_path = "transactions/email_report.html"
+    context = {
+        'user_name': user_name,
+        'pie_chart': pie_chart,
+        'line_chart': line_chart,
+        'income' : income.amount,
+        'transactions' : transactions,
+        'budgets' : budget_list,
+        'user_status': user_status,
+    }
+    pdf_content_bytes = render_to_pdf(pdf_template_path, context)
+    email = EmailMessage(
+        subject,
+        body,
+        from_email,
+        recipient_list,
+    )
+
+    email.attach(pdf_filename, pdf_content_bytes, 'application/pdf')
+
+    email.send()
+    return JsonResponse({'success': True, 'message': f'Email notification sent to {email_address}.'})

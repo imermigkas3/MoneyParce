@@ -14,5 +14,6 @@ urlpatterns = [
 
     # Updated line below:
     path('report/', views.report_view, name='user-report-page'),
+    path('send-email/', views.send_email, name="send-email"),
 ]
 

@@ -33,13 +33,20 @@
         <div class="card-body">
             <div class="text-center mb-4">
                 <h4>Graphical Reports</h4>
-                <div class="d-flex justify-content-center gap-3">
-                    <button class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
-                    <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                    <div style="width: 33%;"></div>
+
+                    <div class="d-flex gap-3 justify-content-center" style="width: 33%;">
+                        <button id="allTimeBtn" class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
+                        <button id="last3MonthsBtn" class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
+                    </div>
+                    <div class="d-flex justify-content-end" style="width: 33%;">
+                        <button id="share-button" class="btn btn-primary">Share</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div id="makepdf" class="row">
                 <!-- Pie Chart Card -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm">
@@ -68,13 +75,58 @@
     </div>
 </div>
 
+<!-- Email Enter Form -->
+<div id ="emailReportModal" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Share Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Enter the desired email below:</p>
+                <form id="email-form" method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="share-confirm" type="button" class="btn btn-primary">Share</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Chart.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+const shareButton = document.getElementById("share-button");
+const confirmShareButton = document.getElementById("share-confirm");
+const emailForm = document.getElementById("email-form");
+const emailInput = document.getElementById("id_email_address")
+
 let pieChartInstance;
 let lineChartInstance;
 
+const allTimeBtn = document.getElementById("allTimeBtn");
+const last3MonthsBtn = document.getElementById("last3MonthsBtn");
+
 function loadReportData(timeRange = "all") {
+    if (timeRange === 'all') {
+        allTimeBtn.classList.remove("btn-secondary");
+        allTimeBtn.classList.add('btn-primary');
+        last3MonthsBtn.classList.remove('btn-primary');
+        last3MonthsBtn.classList.add('btn-secondary');
+    } else if (timeRange === '3months') {
+        last3MonthsBtn.classList.remove('btn-secondary');
+        last3MonthsBtn.classList.add('btn-primary');
+        allTimeBtn.classList.remove('btn-primary');
+        allTimeBtn.classList.add('btn-secondary');
+    }
+
     fetch("{% url 'user-report-data' %}?range=" + timeRange + "&t=" + new Date().getTime())
     .then(response => response.json())
     .then(data => {
@@ -88,7 +140,6 @@ function loadReportData(timeRange = "all") {
                 labels: data.category_data.map(c => c.category),
                 datasets: [{
                     data: data.category_data.map(c => c.total),
-                    backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f'],
                 }]
             },
             options: {
@@ -151,6 +202,62 @@ function loadReportData(timeRange = "all") {
 }
 
 loadReportData("all");
-loadReportData("all");
+
+
+const emailReportModal = document.getElementById("emailReportModal");
+const emailModal = new bootstrap.Modal(emailReportModal);
+
+shareButton.addEventListener("click", () => {
+    emailModal.show();
+});
+
+// This prevents users from pressing enter to submit, must press the "share" button on share modal
+emailForm.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && e.target.nodeName !== "TEXTAREA") {
+            e.preventDefault();
+        }
+});
+
+// Using this so we can get csrf token which is necessary for fetch with method POST
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+const csrftoken = getCookie('csrftoken');
+
+confirmShareButton.addEventListener("click", () => {
+    const recipientEmail = emailInput.value.trim();
+
+    const pieChartBase64 = pieChartInstance.toBase64Image();
+    const lineChartBase64 = lineChartInstance.toBase64Image();
+
+    const postData = {
+        email: recipientEmail,
+        pieChartImg: pieChartBase64,
+        lineChartImg: lineChartBase64
+    }
+    fetch("{% url 'send-email' %}", {
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(postData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    alert(data.error);
+                    emailModal.show();
+                })
+            } else {
+                emailModal.hide();
+                setTimeout(() => {
+                        alert("Your report has been shared!")
+                    }, 500)
+            }
+        })
+});
 </script>
 {% endblock %}

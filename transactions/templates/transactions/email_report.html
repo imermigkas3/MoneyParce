@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .container {
+        }
+
+        .header,
+        .subheader {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px;
+        }
+
+        .subheader {
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        .graph {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 40px auto;
+        }
+
+        .report-section {
+            margin-bottom: 50px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .list {
+            text-align: left;
+        }
+        .list-item {
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Financial Report for {{ user_name }}
+        </div>
+
+        <div class="report-section">
+            <div class="subheader">Brief Summary</div>
+            {{ user_name }}'s current employment status is: <b>{{ user_status }}</b>.
+            They have an annual income of <b>${{ income }}</b>.
+        </div>
+
+        <div class="report-section">
+            <table style="width: 100%; border: none;">
+                <tr> <!-- using table row to get side-by-side look -->
+                    <td valign="top" style="width: 50%">
+                        <div class="subheader">Recent Transactions</div>
+                        <div class="list">
+                            {% for transaction in transactions %}
+                                <div class="list-item">
+                                    &#8226; {{ transaction.date }} - <b>{{ transaction.category }}</b>: {{ transaction.amount }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td valign="top" style="width: 50%">
+                        <div class="subheader">Budgets</div>
+                        <div class="list">
+                            {% for budget in budgets %}
+                            <div class="list-item">
+                                &#8226; <b>{{ budget.duration }} {{ budget.category }}</b> - {{ budget.amount }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="report-section">
+            <table style="width: 100%; border: none;">
+                <tr>
+                    <td valign="top" style="width: 50%;">
+                        <div class="subheader">Spending by Category</div>
+                        <img class="graph" src="{{ pie_chart }}">
+                    </td>
+                    <td valign="top" style="width: 50%;">
+                        <div class="subheader">Monthly Spending Trends</div>
+                        <img class="graph" src="{{ line_chart }}">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

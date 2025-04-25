@@ -234,6 +234,9 @@ confirmShareButton.addEventListener("click", () => {
                 })
             } else {
                 emailModal.hide();
+                setTimeout(() => {
+                        alert("Your report has been shared!")
+                    }, 500)
             }
         })
 });

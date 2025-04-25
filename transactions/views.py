@@ -234,7 +234,7 @@ def send_email(request):
 
     user_status = user_profile.status
     income, created = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')[:10] # only want recent 10
     budget_list = Budget.objects.filter(user=request.user)
 
     subject = f"Financial Report from {user_name}"

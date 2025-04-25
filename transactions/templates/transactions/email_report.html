@@ -65,11 +65,9 @@
                         <div class="subheader">Recent Transactions</div>
                         <div class="list">
                             {% for transaction in transactions %}
-                                {% if forloop.counter0 < 10 %}
-                                    <div class="list-item">
-                                        &#8226; {{ transaction.date }} - <b>{{ transaction.category }}</b>: {{ transaction.amount }}
-                                    </div>
-                                {% endif %}
+                                <div class="list-item">
+                                    &#8226; {{ transaction.date }} - <b>{{ transaction.category }}</b>: {{ transaction.amount }}
+                                </div>
                             {% endfor %}
                         </div>
                     </td>

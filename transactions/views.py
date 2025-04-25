@@ -7,6 +7,7 @@ from plaid.model.transactions_get_request import TransactionsGetRequest
 from plaid.model.transactions_get_request_options import TransactionsGetRequestOptions
 from datetime import datetime, timedelta
 from accounts.models import UserProfile
+from accounts.models import Income
 from plaid_client import client
 
 from django.http import JsonResponse
@@ -221,10 +222,7 @@ def render_to_pdf(template_src, context):
     result = BytesIO()
     # Encode HTML to UTF-8 bytes before passing to pisaDocument
     pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encoding='UTF-8')
-    if not pdf.err:
-        return result.getvalue()
-    print(html)
-    return None
+    return result.getvalue()
 
 def send_email(request):
     data = json.loads(request.body)
@@ -233,6 +231,10 @@ def send_email(request):
         return JsonResponse({'error': 'Invalid email'}, status=400)
     user_profile = UserProfile.objects.filter(user=request.user)[0]
     user_name = user_profile.first_name + " " + user_profile.last_name
+
+    income = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    budget_list = Budget.objects.filter(user=request.user)
 
     subject = f"Financial Report from {user_name}"
     body = f"{user_name}, a MoneyParce user, has shared the attached financial report with you."
@@ -251,6 +253,9 @@ def send_email(request):
         'user_name': user_name,
         'pie_chart': pie_chart,
         'line_chart': line_chart,
+        'income' : income,
+        'transactions' : transactions,
+        'budgets' : budget_list,
     }
     pdf_content_bytes = render_to_pdf(pdf_template_path, context)
     email = EmailMessage(

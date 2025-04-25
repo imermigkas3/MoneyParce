@@ -5,7 +5,6 @@
     <title></title>
     <style>
         .container {
-            text-align: center;
         }
 
         .header,
@@ -33,6 +32,23 @@
 
         .report-section {
             margin-bottom: 50px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .list-item {
+            margin: 0;
+            padding: 0;
+        }
+
+        .left-box {
+            float: left;
+            width: 45%;
+        }
+
+        .right-box {
+            float: right;
+            width: 45%;
         }
 
     </style>
@@ -52,6 +68,34 @@
         <div class="report-section">
             <div class="subheader">Monthly Spending Trends</div>
             <img class="graph" src="{{ line_chart }}">
+        </div>
+
+        <div class="report-section">
+            <div class="subheader">Income</div>
+            {{ user_name }} currently has an income of ${{ income }}.
+        </div>
+
+        <div class="report-section side-by-side">
+            <table style="width: 100%; border: none;">
+                <tr> <!-- using table row to get side-by-side look -->
+                    <td style="width: 50%">
+                        <div class="subheader">Recent Transactions</div>
+                        {% for transaction in transactions %} <!-- reminder to limit this to 10 transactions, same with budgets -->
+                            <div class="list-item">
+                                {{ transaction.date }} - <b>{{ transaction.category }}</b>: {{ transaction.amount }}
+                            </div>
+                        {% endfor %}
+                    </td>
+                    <td style="width: 50%">
+                        <div class="subheader">Budgets</div>
+                        {% for budget in budgets %}
+                            <div class="list-item">
+                                <b>{{ budget.duration }} {{ budget.category }}</b> - {{ budget.amount }}
+                            </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

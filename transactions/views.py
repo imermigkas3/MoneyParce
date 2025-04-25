@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, BankTransaction
@@ -17,6 +16,7 @@ from datetime import timedelta
 from collections import OrderedDict
 from analytics.models import GraphGenerationLog
 from budgets.models import Budget
+from .forms import EmailForm
 
 
 
@@ -204,9 +204,12 @@ def report_view(request):
         if spent > budget.amount:
             warnings.append(f"You are exceeding your budget in {budget.category}. Consider reducing spending.")
 
+    email_form = EmailForm()
+
     context = {
         'transactions': transactions,
         'warnings': warnings,  # pass to report.html
+        'form': email_form,
     }
 
     return render(request, 'transactions/report.html', context)

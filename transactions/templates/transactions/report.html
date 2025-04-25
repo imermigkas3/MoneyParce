@@ -211,8 +211,13 @@ confirmShareButton.addEventListener("click", () => {
     const recipientEmail = emailInput.value.trim();
     emailForm.submit();
 
+    const pieChartBase64 = pieChartInstance.toBase64Image();
+    const lineChartBase64 = lineChartInstance.toBase64Image();
+
     const postData = {
         email: recipientEmail,
+        pieChartImg: pieChartBase64,
+        lineChartImg: lineChartBase64
     }
     fetch("{% url 'send-email' %}", {
         method: "POST",

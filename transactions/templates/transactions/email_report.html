@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .container {
+            text-align: center;
+        }
+
+        .header,
+        .subheader {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px;
+        }
+
+        .subheader {
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        .graph {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 40px auto;
+        }
+
+        .report-section {
+            margin-bottom: 50px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Financial Report for {{ user_name }}
+        </div>
+        <!-- Pie Chart Card -->
+        <div class="report-section">
+                <div class="subheader">Spending by Category</div>
+                <img class="graph" src="{{ pie_chart }}">
+        </div>
+
+        <!-- Line Chart Card -->
+        <div class="report-section">
+            <div class="subheader">Monthly Spending Trends</div>
+            <img class="graph" src="{{ line_chart }}">
+        </div>
+    </div>
+</body>
+</html>

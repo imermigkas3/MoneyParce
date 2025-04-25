@@ -21,6 +21,9 @@ from .forms import EmailForm
 from django.conf import settings
 from django.core.mail import EmailMessage
 import json
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
 
 
 @login_required
@@ -213,6 +216,16 @@ def report_view(request):
     }
     return render(request, 'transactions/report.html', context)
 
+def render_to_pdf(template_src, context):
+    html = render_to_string(template_src, context)
+    result = BytesIO()
+    # Encode HTML to UTF-8 bytes before passing to pisaDocument
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encoding='UTF-8')
+    if not pdf.err:
+        return result.getvalue()
+    print(html)
+    return None
+
 def send_email(request):
     data = json.loads(request.body)
 
@@ -226,6 +239,18 @@ def send_email(request):
     email_address = data.get('email')
     recipient_list = [email_address]
 
+    pie_chart = data.get('pieChartImg')
+    line_chart = data.get('lineChartImg')
+
+    pdf_filename = f"Financial_Report_{user_profile.first_name}_{user_profile.last_name}"
+
+    pdf_template_path = "transactions/email_report.html"
+    context = {
+        'user_name': user_name,
+        'pie_chart': pie_chart,
+        'line_chart': line_chart,
+    }
+    pdf_content_bytes = render_to_pdf(pdf_template_path, context)
     email = EmailMessage(
         subject,
         body,
@@ -233,7 +258,7 @@ def send_email(request):
         recipient_list,
     )
 
-    # email.attach(financial_report.pdf)
+    email.attach(pdf_filename, pdf_content_bytes, 'application/pdf')
 
     email.send()
     return JsonResponse({'success': True, 'message': f'Email notification sent to {email_address}.'})

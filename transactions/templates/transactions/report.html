@@ -209,7 +209,6 @@ const csrftoken = getCookie('csrftoken');
 
 confirmShareButton.addEventListener("click", () => {
     const recipientEmail = emailInput.value.trim();
-    emailForm.submit();
 
     const pieChartBase64 = pieChartInstance.toBase64Image();
     const lineChartBase64 = lineChartInstance.toBase64Image();
@@ -227,6 +226,16 @@ confirmShareButton.addEventListener("click", () => {
         },
         body: JSON.stringify(postData)
     })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    alert(data.error);
+                    emailModal.show();
+                })
+            } else {
+                emailModal.hide();
+            }
+        })
 });
 
 </script>

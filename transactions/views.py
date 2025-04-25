@@ -228,7 +228,9 @@ def render_to_pdf(template_src, context):
 
 def send_email(request):
     data = json.loads(request.body)
-
+    form = EmailForm({'email_address': data.get('email')})
+    if not form.is_valid():
+        return JsonResponse({'error': 'Invalid email'}, status=400)
     user_profile = UserProfile.objects.filter(user=request.user)[0]
     user_name = user_profile.first_name + " " + user_profile.last_name
 

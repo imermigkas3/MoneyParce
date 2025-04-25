@@ -8,4 +8,4 @@ class TransactionForm(ModelForm):
         fields = ['description', 'amount', 'category']
 
 class EmailForm(forms.Form):
-    email_address = forms.CharField()
+    email_address = forms.EmailField()

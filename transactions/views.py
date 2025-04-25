@@ -232,7 +232,8 @@ def send_email(request):
     user_profile = UserProfile.objects.filter(user=request.user)[0]
     user_name = user_profile.first_name + " " + user_profile.last_name
 
-    income = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
+    user_status = user_profile.status
+    income, created = Income.objects.get_or_create(user=request.user, defaults={'amount': 0})
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     budget_list = Budget.objects.filter(user=request.user)
 
@@ -253,9 +254,10 @@ def send_email(request):
         'user_name': user_name,
         'pie_chart': pie_chart,
         'line_chart': line_chart,
-        'income' : income,
+        'income' : income.amount,
         'transactions' : transactions,
         'budgets' : budget_list,
+        'user_status': user_status,
     }
     pdf_content_bytes = render_to_pdf(pdf_template_path, context)
     email = EmailMessage(

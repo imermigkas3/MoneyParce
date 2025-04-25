@@ -37,8 +37,8 @@
                     <div style="width: 33%;"></div>
 
                     <div class="d-flex gap-3 justify-content-center" style="width: 33%;">
-                        <button class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
-                        <button class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
+                        <button id="allTimeBtn" class="btn btn-primary" onclick="loadReportData('all')">All Time</button>
+                        <button id="last3MonthsBtn" class="btn btn-secondary" onclick="loadReportData('3months')">Last 3 Months</button>
                     </div>
                     <div class="d-flex justify-content-end" style="width: 33%;">
                         <button id="share-button" class="btn btn-primary">Share</button>
@@ -111,7 +111,22 @@ const emailInput = document.getElementById("id_email_address")
 let pieChartInstance;
 let lineChartInstance;
 
+const allTimeBtn = document.getElementById("allTimeBtn");
+const last3MonthsBtn = document.getElementById("last3MonthsBtn");
+
 function loadReportData(timeRange = "all") {
+    if (timeRange === 'all') {
+        allTimeBtn.classList.remove("btn-secondary");
+        allTimeBtn.classList.add('btn-primary');
+        last3MonthsBtn.classList.remove('btn-primary');
+        last3MonthsBtn.classList.add('btn-secondary');
+    } else if (timeRange === '3months') {
+        last3MonthsBtn.classList.remove('btn-secondary');
+        last3MonthsBtn.classList.add('btn-primary');
+        allTimeBtn.classList.remove('btn-primary');
+        allTimeBtn.classList.add('btn-secondary');
+    }
+
     fetch("{% url 'user-report-data' %}?range=" + timeRange + "&t=" + new Date().getTime())
     .then(response => response.json())
     .then(data => {
@@ -125,7 +140,6 @@ function loadReportData(timeRange = "all") {
                 labels: data.category_data.map(c => c.category),
                 datasets: [{
                     data: data.category_data.map(c => c.total),
-                    backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f'],
                 }]
             },
             options: {

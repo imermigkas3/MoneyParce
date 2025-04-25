@@ -188,16 +188,21 @@ function loadReportData(timeRange = "all") {
             }
         });
 
-        document.getElementById('totalSpent').textContent = `$${totalSpent.toFixed(2)}`;
-        document.getElementById('topCategory').textContent = topCategory;
-        document.getElementById('basicTip').textContent =
+        if (data.category_data.length > 0) {
+            document.getElementById('totalSpent').textContent = `$${totalSpent.toFixed(2)}`;
+            document.getElementById('topCategory').textContent = topCategory;
+            document.getElementById('basicTip').textContent =
             `Try limiting your ${topCategory.toLowerCase()} spending to save more in this period.`;
 
-        document.getElementById('insightSummary').classList.remove('d-none');
+            document.getElementById('insightSummary').classList.remove('d-none');
+        } else {
+            document.getElementById('insightSummary').classList.add('d-none');
+        }
     });
 }
 
 loadReportData("all");
+
 
 const emailReportModal = document.getElementById("emailReportModal");
 const emailModal = new bootstrap.Modal(emailReportModal);
@@ -254,6 +259,5 @@ confirmShareButton.addEventListener("click", () => {
             }
         })
 });
-
 </script>
 {% endblock %}

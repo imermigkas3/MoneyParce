@@ -18,6 +18,10 @@ from analytics.models import GraphGenerationLog
 from budgets.models import Budget
 from .forms import EmailForm
 
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMessage
 
 
 @login_required
@@ -204,6 +208,27 @@ def report_view(request):
         if spent > budget.amount:
             warnings.append(f"You are exceeding your budget in {budget.category}. Consider reducing spending.")
 
+    if request.method == "POST": # User has sent an email
+        user_profile = UserProfile.objects.filter(user=request.user)[0]
+        user_name = user_profile.first_name + " " + user_profile.last_name
+
+        subject = f"Financial Report from {user_name}"
+        body = f"{user_name}, a MoneyParce user, has shared the attached financial report with you."
+        from_email = settings.DEFAULT_FROM_EMAIL
+
+        email_address = request.POST.get('email_address')
+        recipient_list = [email_address]
+
+        email = EmailMessage(
+            subject,
+            body,
+            from_email,
+            recipient_list,
+        )
+
+        # email.attach(financial_report.pdf)
+
+        email.send()
     email_form = EmailForm()
 
     context = {
@@ -211,6 +236,4 @@ def report_view(request):
         'warnings': warnings,  # pass to report.html
         'form': email_form,
     }
-
     return render(request, 'transactions/report.html', context)
-

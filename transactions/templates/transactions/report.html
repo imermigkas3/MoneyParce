@@ -106,11 +106,10 @@
 const shareButton = document.getElementById("share-button");
 const confirmShareButton = document.getElementById("share-confirm");
 const emailForm = document.getElementById("email-form");
+const emailInput = document.getElementById("id_email_address")
 
 let pieChartInstance;
 let lineChartInstance;
-
-let user;
 
 function loadReportData(timeRange = "all") {
     fetch("{% url 'user-report-data' %}?range=" + timeRange + "&t=" + new Date().getTime())
@@ -118,7 +117,6 @@ function loadReportData(timeRange = "all") {
     .then(data => {
         if (pieChartInstance) pieChartInstance.destroy();
         if (lineChartInstance) lineChartInstance.destroy();
-        user = data.report_user // storing user for sharing feature later
 
         const pieCtx = document.getElementById('pieChart').getContext('2d');
         pieChartInstance = new Chart(pieCtx, {
@@ -201,8 +199,29 @@ emailForm.addEventListener("keydown", (e) => {
         }
 });
 
+// Using this so we can get csrf token which is necessary for fetch with method POST
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+const csrftoken = getCookie('csrftoken');
+
 confirmShareButton.addEventListener("click", () => {
+    const recipientEmail = emailInput.value.trim();
     emailForm.submit();
+
+    const postData = {
+        email: recipientEmail,
+    }
+    fetch("{% url 'send-email' %}", {
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(postData)
+    })
 });
 
 </script>

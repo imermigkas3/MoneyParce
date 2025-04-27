@@ -89,4 +89,4 @@ websockets==15.0.1
 xxhash==3.5.0
 yarl==1.18.3
 zipp==3.17.0
-
+xhtml2pdf==0.2.11

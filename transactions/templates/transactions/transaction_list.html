@@ -38,6 +38,9 @@
 
     <hr class="mt-5">
       <h3 class="mt-4 mb-3">Linked Bank Transactions (Plaid)</h3>
+      <p>We understand that you may not want all your transactions to be shown and visible in MoneyParce's
+        generated graphs and visuals. As a result, you may choose which of these logged purchases you want to
+        track and categorize by adding to "Your Transactions" above. </p>
       <a href="{% url 'fetch_bank_transactions' %}" class="btn btn-info mb-3">↻ Refresh Bank Transactions</a>
 
       {% if bank_transactions %}
